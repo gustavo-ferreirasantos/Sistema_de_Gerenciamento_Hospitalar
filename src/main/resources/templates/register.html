@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro de Paciente</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body p-5">
+
+                    <h2 class="text-center mb-4 fw-bold text-primary">Cadastro de Paciente</h2>
+
+                    <form method="POST" th:action="@{/register}" th:object="${paciente}" class="row g-3 needs-validation" novalidate>
+                        <input type="hidden" th:field="*{id}"/>
+
+                        <!-- Dados pessoais -->
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Nome completo</label>
+                            <input type="text" class="form-control" th:field="*{name}" placeholder="Digite seu nome" required>
+                            <div class="invalid-feedback">Por favor, insira seu nome completo.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">E-mail</label>
+                            <input type="email" class="form-control" th:field="*{email}" placeholder="exemplo@email.com" required>
+                            <div class="invalid-feedback">Digite um e-mail válido.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Senha</label>
+                            <input type="password" class="form-control" th:field="*{password}" placeholder="Mínimo 8 caracteres" minlength="8" required>
+                            <div class="invalid-feedback">A senha deve ter pelo menos 8 caracteres.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">CPF</label>
+                            <input type="text" class="form-control" th:field="*{cpf}" placeholder="000.000.000-00" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required>
+                            <div class="invalid-feedback">Insira um CPF válido (ex: 000.000.000-00).</div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Endereço -->
+                        <h5 class="text-secondary fw-bold">Endereço</h5>
+
+                        <div class="col-md-4">
+                            <label class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep" th:field="*{endereco.cep}" placeholder="00000-000"
+                                   maxlength="9" pattern="\d{5}-?\d{3}" required>
+                            <div class="invalid-feedback">Digite um CEP válido (ex: 12345-678).</div>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label class="form-label">Logradouro</label>
+                            <input type="text" class="form-control" id="logradouro" th:field="*{endereco.logradouro}" readonly required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="bairro" th:field="*{endereco.bairro}" readonly required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="localidade" th:field="*{endereco.localidade}" readonly required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Estado</label>
+                            <input type="text" class="form-control" id="estado" th:field="*{endereco.estado}" readonly required>
+                        </div>
+
+                        <div class="col-12 text-center mt-4">
+                            <button type="submit" class="btn btn-primary px-4">Salvar</button>
+                            <a href="/list" class="btn btn-secondary px-4">Cancelar</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script>
+    // Validação visual Bootstrap
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    // Auto-preenchimento via ViaCEP
+    document.getElementById('cep').addEventListener('blur', async () => {
+        const cep = document.getElementById('cep').value.replace(/\D/g, '');
+        if (cep.length === 8) {
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                const data = await response.json();
+
+                if (!data.erro) {
+                    document.getElementById('logradouro').value = data.logradouro;
+                    document.getElementById('bairro').value = data.bairro;
+                    document.getElementById('localidade').value = data.localidade;
+                    document.getElementById('estado').value = data.uf;
+                } else {
+                    alert('CEP não encontrado!');
+                }
+            } catch (error) {
+                alert('Erro ao buscar o CEP.');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

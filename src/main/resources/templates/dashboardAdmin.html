@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital - Painel do Administrador</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .sidebar {
+      height: 100vh;
+      background-color: #004d66;
+      color: white;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 10px 20px;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .sidebar a:hover, .sidebar a.active {
+      background-color: #006680;
+    }
+    .content {
+      margin-left: 250px;
+      padding: 25px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 15px 25px;
+      border-radius: 12px;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    .table-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 25px;
+    }
+    th {
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+    td {
+      vertical-align: middle;
+    }
+    .no-data {
+      text-align: center;
+      color: #777;
+      padding: 40px 0;
+    }
+    .btn-hospital {
+      background-color: #0088a9;
+      color: white;
+    }
+    .btn-hospital:hover {
+      background-color: #006d85;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h4 class="text-center mb-4">⚙️ Painel do Admin</h4>
+
+  <a class="nav-link active" onclick="mostrarSecao('pacientes')">
+    <i class="bi bi-people me-2"></i> Pacientes
+  </a>
+  <a class="nav-link" onclick="mostrarSecao('medicos')">
+    <i class="bi bi-person-badge me-2"></i> Médicos
+  </a>
+  <a class="nav-link" onclick="mostrarSecao('cadastroPaciente')">
+    <i class="bi bi-person-plus me-2"></i> Cadastrar Paciente
+  </a>
+  <a class="nav-link" onclick="mostrarSecao('cadastroMedico')">
+    <i class="bi bi-person-workspace me-2"></i> Cadastrar Médico
+  </a>
+
+  <hr class="mx-3">
+  <a href="/" class="text-danger">
+    <i class="bi bi-box-arrow-right me-2"></i> Sair
+  </a>
+</div>
+
+<!-- Conteúdo -->
+<div class="content">
+  <div class="topbar mb-4">
+    <h3 class="m-0">Painel Administrativo</h3>
+    <div><i class="bi bi-gear fs-3"></i></div>
+  </div>
+
+  <!-- Seção: Lista de Pacientes -->
+  <section id="pacientes" class="secao">
+    <div class="table-container">
+      <h4 class="mb-4 text-primary text-center fw-bold">Lista de Pacientes</h4>
+
+      <table class="table table-striped table-hover align-middle text-center">
+        <thead class="table-primary">
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Senha</th>
+          <th>CPF</th>
+          <th>CEP</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${pacientes}">
+          <td th:text="${p.id}"></td>
+          <td th:text="${p.nome}"></td>
+          <td th:text="${p.email}"></td>
+          <td th:text="${p.password}"></td>
+          <td th:text="${p.cpf}"></td>
+          <td th:text="${p.endereco.cep}"></td>
+          <td>
+            <a th:href="@{'/edit/paciente/' + ${p.id}}" class="btn btn-sm btn-outline-warning me-2">
+              <i class="bi bi-pencil"></i> Editar
+            </a>
+            <button class="btn btn-sm btn-outline-danger"
+                    th:attr="data-id=${p.id}"
+                    onclick="confirmDelete(this, 'paciente')">
+              <i class="bi bi-trash"></i> Excluir
+            </button>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(pacientes)}">
+          <td colspan="7" class="no-data">Nenhum paciente cadastrado.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="text-center mt-4">
+        <a href="/register" class="btn btn-hospital px-4">
+          <i class="bi bi-person-plus me-2"></i>Novo Paciente
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção: Lista de Médicos -->
+  <section id="medicos" class="secao d-none">
+    <div class="table-container">
+      <h4 class="mb-4 text-primary text-center fw-bold">Lista de Médicos</h4>
+
+      <table class="table table-striped table-hover align-middle text-center">
+        <thead class="table-primary">
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Senha</th>
+          <th>CRM</th>
+          <th>Especialidade</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="m : ${medicos}">
+          <td th:text="${m.id}"></td>
+          <td th:text="${m.nome}"></td>
+          <td th:text="${m.email}"></td>
+          <td th:text="${m.password}"></td>
+          <td th:text="${m.crm}"></td>
+          <td th:text="${m.especialidade}"></td>
+          <td>
+            <a th:href="@{'/edit/medico/' + ${m.id}}" class="btn btn-sm btn-outline-warning me-2">
+              <i class="bi bi-pencil"></i> Editar
+            </a>
+            <button class="btn btn-sm btn-outline-danger"
+                    th:attr="data-id=${m.id}"
+                    onclick="confirmDelete(this, 'medico')">
+              <i class="bi bi-trash"></i> Excluir
+            </button>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(medicos)}">
+          <td colspan="7" class="no-data">Nenhum médico cadastrado.</td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="text-center mt-4">
+        <a href="/register_medico" class="btn btn-hospital px-4">
+          <i class="bi bi-person-plus me-2"></i>Novo Médico
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção: Cadastro de Paciente -->
+  <section id="cadastroPaciente" class="secao d-none">
+    <div class="card p-4">
+      <h4 class="mb-3 text-primary"><i class="bi bi-person-plus me-2"></i>Cadastrar Paciente</h4>
+      <form action="/register" method="post">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Nome</label>
+            <input type="text" class="form-control" name="nome" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">E-mail</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Senha</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">CPF</label>
+            <input type="text" class="form-control" name="cpf" required>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">CEP</label>
+            <input type="text" class="form-control" name="cep" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-hospital mt-2">Salvar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Seção: Cadastro de Médico -->
+  <section id="cadastroMedico" class="secao d-none">
+    <div class="card p-4">
+      <h4 class="mb-3 text-primary"><i class="bi bi-person-workspace me-2"></i>Cadastrar Médico</h4>
+      <form action="/register_medico" method="post">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Nome</label>
+            <input type="text" class="form-control" name="nome" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">E-mail</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Senha</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">CRM</label>
+            <input type="text" class="form-control" name="crm" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Especialidade</label>
+            <input type="text" class="form-control" name="especialidade" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-hospital mt-2">Salvar</button>
+      </form>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  function mostrarSecao(id) {
+    document.querySelectorAll('.secao').forEach(sec => sec.classList.add('d-none'));
+    document.getElementById(id).classList.remove('d-none');
+    document.querySelectorAll('.sidebar a').forEach(link => link.classList.remove('active'));
+    event.target.classList.add('active');
+    sessionStorage.setItem('secaoAtivaAdmin', id);
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const secao = sessionStorage.getItem('secaoAtivaAdmin');
+    if (secao && document.getElementById(secao)) {
+      mostrarSecao(secao);
+    } else {
+      mostrarSecao('pacientes');
+    }
+  });
+
+  function confirmDelete(button, tipo) {
+    const id = button.getAttribute('data-id');
+    Swal.fire({
+      title: "Tem certeza?",
+      text: "Essa ação não poderá ser desfeita!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sim, excluir!",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc3545"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/delete/${tipo}/${id}`;
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

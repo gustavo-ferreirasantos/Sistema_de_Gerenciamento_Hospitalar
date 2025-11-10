@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Médico</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-5">
+
+          <h2 class="text-center mb-4 fw-bold text-primary">Cadastro de Médico</h2>
+
+          <form method="POST" th:action="@{/registroMedico}" th:object="${medico}" class="row g-3 needs-validation" novalidate>
+            <input type="hidden" th:field="*{id}"/>
+
+            <!-- Dados pessoais -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Nome completo</label>
+              <input type="text" class="form-control" th:field="*{nome}" placeholder="Digite o nome completo" required>
+              <div class="invalid-feedback">Por favor, insira o nome completo.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">E-mail</label>
+              <input type="email" class="form-control" th:field="*{email}" placeholder="exemplo@hospital.com" required>
+              <div class="invalid-feedback">Digite um e-mail válido.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Senha</label>
+              <input type="password" class="form-control" th:field="*{password}" placeholder="Mínimo 8 caracteres" minlength="8" required>
+              <div class="invalid-feedback">A senha deve ter pelo menos 8 caracteres.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">CRM</label>
+              <input type="text" class="form-control" th:field="*{crm}" placeholder="Digite o CRM" required>
+              <div class="invalid-feedback">Informe um CRM válido.</div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Especialidade e Carga Horária -->
+            <h5 class="text-secondary fw-bold">Informações Profissionais</h5>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Especialidade</label>
+              <select class="form-select" th:field="*{especialidade}" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option th:each="esp : ${T(br.com.hospital.model.Medico.Especialidade).values()}"
+                        th:value="${esp}" th:text="${esp}"></option>
+              </select>
+              <div class="invalid-feedback">Selecione uma especialidade.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Carga Horária (semanal)</label>
+              <input type="number" class="form-control" th:field="*{cargaHoraria}" min="10" placeholder="Ex: 40" required>
+              <div class="invalid-feedback">Informe a carga horária semanal.</div>
+            </div>
+
+
+            <div class="col-12 text-center mt-4">
+              <button type="submit" class="btn btn-primary px-4">Salvar</button>
+              <a href="/listMedicos" class="btn btn-secondary px-4">Cancelar</a>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  // Validação visual Bootstrap
+  (() => {
+    'use strict';
+    const forms = document.querySelectorAll('.needs-validation');
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
+</script>
+
+</body>
+</html>

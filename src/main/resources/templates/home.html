@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Vida+</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-link {
+      color: #0d6efd !important;
+      font-weight: 500;
+    }
+    .hero-section {
+      background-color: #0C4470;
+      color: white;
+      padding: 100px 0;
+    }
+    .hero-section h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+    }
+    .hero-section p {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+    .hero-section img {
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    /* Botão principal (fundo sólido) */
+    .btn-login {
+      background-color: #0C4470;
+      color: white;
+      border: none;
+      transition: 0.3s;
+    }
+    .btn-login:hover {
+      background-color: #093459; /* mais escuro no hover */
+      color: white;
+    }
+
+    /* Botão com borda */
+    .btn-outline-login {
+      color: #0C4470;
+      border: 2px solid #0C4470;
+      transition: 0.3s;
+    }
+
+    .btn-outline-login:hover {
+      background-color: #0C4470;
+      color: white;
+    }
+    .btn-login, .btn-outline-login {
+      border-radius: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <h3 class="m-0 text-primary fw-bold">🏥 Hospital Vida+</h3>
+    <div>
+      <a href="/login" class="btn btn-outline-login me-2">Login Usuário</a>
+      <a href="/loginAdmin" class="btn btn-login">Login Admin</a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Texto -->
+      <div class="col-md-5 mb-4 mb-md-0">
+        <h5>Bem-vindo ao</h5>
+        <h1>Hospital Vida+</h1>
+        <p>
+          Cuidamos de você com dedicação, tecnologia e humanidade.
+          Aqui você pode agendar exames, acompanhar resultados e receber o melhor atendimento possível.
+          Nosso compromisso é com a sua saúde e bem-estar.
+        </p>
+        <a href="/sobre" class="btn btn-light btn-lg mt-3">Saiba mais</a>
+      </div>
+
+      <!-- Imagem -->
+      <div class="col-md-7 text-center">
+        <img src="/img/home.jpg" alt="Hospital" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Rodapé -->
+<footer class="text-center py-3 text-muted">
+  © 2025 Hospital Vida+ — Todos os direitos reservados.
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

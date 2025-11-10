@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+
+  <link rel="stylesheet" th:href="@{/style.css}">
+  <title>Login Admin</title>
+</head>
+<body>
+
+<section class="vh-100">
+  <div class="container-fluid h-custom">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+
+      <div class="col-md-9 col-lg-6 col-xl-5">
+        <img src="/img/login_admin.jpg"
+             class="img-fluid" alt="Admin Login Image">
+      </div>
+
+      <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+
+        <!-- FORMULÁRIO DE LOGIN ADMIN -->
+        <form method="POST" th:action="@{/loginAdmin}" th:object="${autenticacao}">
+
+          <h3 class="mb-4 text-center fw-bold">Área Administrativa</h3>
+
+          <!-- Email -->
+          <div class="form-outline mb-4">
+            <input type="email" id="adminEmail" class="form-control form-control-lg"
+                   placeholder="Digite o e-mail do administrador"
+                   th:field="*{email}" required>
+            <label class="form-label" for="adminEmail">E-mail do administrador</label>
+          </div>
+
+          <!-- Senha -->
+          <div class="form-outline mb-3">
+            <input type="password" id="adminPassword" class="form-control form-control-lg"
+                   placeholder="Digite a senha de acesso"
+                   th:field="*{password}" required>
+            <label class="form-label" for="adminPassword">Senha</label>
+          </div>
+
+          <div th:if="${param.error}">
+            <p class="text-danger text-center">E-mail ou senha inválidos!</p>
+          </div>
+
+          <div class="text-center text-lg-start mt-4 pt-2">
+            <button type="submit" class="btn btn-danger btn-lg"
+                    style="padding-left: 2.5rem; padding-right: 2.5rem;">
+              Login Admin
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
