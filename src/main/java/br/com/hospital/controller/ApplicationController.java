@@ -88,6 +88,12 @@ public class ApplicationController {
 
     @PostMapping("/register")
     public String register(Paciente paciente) {
+        // verifica a duplicidade de CPFs
+        if (pacienteRepository.existsByCpf(paciente.getCpf())){
+            redirectAttributes.addFlashAttribute("erro", "CPF já cadastrado.");
+            return "redirect:/register?error";
+        }
+        
         adminService.adicionarPaciente(pacienteRepository, paciente);
         return "redirect:/lista";
     }
