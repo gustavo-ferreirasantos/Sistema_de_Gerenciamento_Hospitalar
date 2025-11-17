@@ -7,6 +7,7 @@ import br.com.hospital.repository.MedicoRepository;
 import br.com.hospital.repository.PacienteRepository;
 import br.com.hospital.model.Agendamento;
 import br.com.hospital.model.Agendamento.StatusAgendamento;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,9 +27,12 @@ import java.util.Optional;
 public class Medico extends User{
 
     private String crm;
+    private String cpf;
     @Enumerated(EnumType.STRING)
     private Especialidade especialidade;
     private int cargaHoraria;
+    @Embedded
+    Endereco endereco;
     private int horasTrabalhadas = 0;
 
 

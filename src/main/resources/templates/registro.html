@@ -27,7 +27,7 @@
                     </div>
 
 
-                    <form method="POST" th:action="@{/register}" th:object="${paciente}" class="row g-3 needs-validation" novalidate>
+                    <form method="POST" th:action="@{'/registro'}" th:object="${paciente}" class="row g-3 needs-validation" novalidate>
                         <input type="hidden" th:field="*{id}"/>
 
                         <!-- Dados pessoais -->
@@ -89,7 +89,7 @@
 
                         <div class="col-12 text-center mt-4">
                             <button type="submit" class="btn btn-primary px-4">Salvar</button>
-                            <a href="/list" class="btn btn-secondary px-4">Cancelar</a>
+                            <a href="/" class="btn btn-secondary px-4">Cancelar</a>
                         </div>
                     </form>
 

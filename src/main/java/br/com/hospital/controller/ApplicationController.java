@@ -79,18 +79,18 @@ public class ApplicationController {
         }
     }
 
-    @GetMapping("/register")
-    public ModelAndView registerForm() {
-        ModelAndView mv = new ModelAndView("register");
+    @GetMapping("/registro")
+    public ModelAndView registroForm() {
+        ModelAndView mv = new ModelAndView("registro");
         mv.addObject("paciente", new Paciente());
         return mv;
     }
 
-    @PostMapping("/register")
-    public String register(Paciente paciente) {
+    @PostMapping("/registro")
+    public String registro(Paciente paciente) {
         // verifica a duplicidade de CPFs
         if (!adminService.adicionarPaciente(pacienteRepository, paciente)){
-            return "redirect:/register?error";
+            return "redirect:/registro?error";
         }
         return "redirect:/login";
     }
@@ -105,21 +105,31 @@ public class ApplicationController {
     @PostMapping("/registroMedico")
     public String registroMedico(@ModelAttribute Medico medico) {
         medicoRepository.save(medico);
-        return "redirect:/listaMedicos";
+        return "redirect:/dashboardAdmin";
     }
 
     @GetMapping("/dashboardAdmin")
     public ModelAndView list() {
         ModelAndView mv = new ModelAndView("dashboardAdmin");
         mv.addObject("pacientes", pacienteRepository.findAll());
+        mv.addObject("medicos", medicoRepository.findAll());
+        mv.addObject("informacoes", informacoesRepository.findAll());
         return mv;
     }
 
     @GetMapping("/edit/{id}")
     public ModelAndView edit(@PathVariable("id") Long id) {
-        ModelAndView mv = new ModelAndView("register");
+        ModelAndView mv = new ModelAndView("registro");
         Optional<Paciente> clientFind = pacienteRepository.findById(id);
         clientFind.ifPresent(client -> mv.addObject("paciente", client));
+        return mv;
+    }
+
+    @GetMapping("/edit/medico/{id}")
+    public ModelAndView editMedico(@PathVariable("id") Long id) {
+        ModelAndView mv = new ModelAndView("registroMedico");
+        Optional<Medico> medicoFind = medicoRepository.findById(id);
+        medicoFind.ifPresent(medico -> mv.addObject("medico", medico));
         return mv;
     }
 

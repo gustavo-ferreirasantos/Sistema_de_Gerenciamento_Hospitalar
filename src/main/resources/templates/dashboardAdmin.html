@@ -88,6 +88,9 @@
   <a class="nav-link" onclick="mostrarSecao('medicos')">
     <i class="bi bi-person-badge me-2"></i> Médicos
   </a>
+  <a class="nav-link" onclick="mostrarSecao('exames')">
+    <i class="bi bi-clipboard-plus me-2"></i> Exames
+  </a>
   <!--
   <a class="nav-link" onclick="mostrarSecao('cadastroPaciente')">
     <i class="bi bi-person-plus me-2"></i> Cadastrar Paciente
@@ -184,7 +187,7 @@
       </table>
 
       <div class="text-center mt-4">
-        <a href="/register" class="btn btn-hospital px-4">
+        <a href="/registro" class="btn btn-hospital px-4">
           <i class="bi bi-person-plus me-2"></i>Novo Paciente
         </a>
       </div>
@@ -234,12 +237,67 @@
       </table>
 
       <div class="text-center mt-4">
-        <a href="/register_medico" class="btn btn-hospital px-4">
+        <a href="/registroMedico" class="btn btn-hospital px-4">
           <i class="bi bi-person-plus me-2"></i>Novo Médico
         </a>
       </div>
     </div>
   </section>
+
+
+
+  <!-- Seção: Lista de Exames -->
+  <section id="exames" class="secao d-none">
+    <div class="table-container">
+      <h4 class="mb-4 text-primary text-center fw-bold">Lista de Exames</h4>
+
+      <table class="table table-striped table-hover align-middle text-center">
+        <thead class="table-primary">
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Tempo (min)</th>
+          <th>Tipo</th>
+          <th>Especialidade</th>
+          <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="info : ${informacoes}">
+          <td th:text="${info.id}"></td>
+          <td th:text="${info.nome}"></td>
+          <td th:text="${info.descricao}"></td>
+          <td th:text="${info.tempoNecessario}"></td>
+          <td th:text="${info.tipoAgendamento}"></td>
+          <td th:text="${info.especialidadeRelacionada}"></td>
+          <td>
+            <a th:href="@{'/edit/informacao/' + ${info.id}}" class="btn btn-sm btn-outline-warning me-2">
+              <i class="bi bi-pencil"></i> Editar
+            </a>
+            <button class="btn btn-sm btn-outline-danger"
+                    th:attr="data-id=${info.id}"
+                    onclick="confirmDelete(this, 'informacao')">
+              <i class="bi bi-trash"></i> Excluir
+            </button>
+          </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(exames)}">
+          <td colspan="7" class="no-data">Nenhum exame cadastrado.</td>
+        </tr>
+
+        </tbody>
+      </table>
+
+      <div class="text-center mt-4">
+        <a href="/cadastroInformacao" class="btn btn-hospital px-4">
+          <i class="bi bi-plus-circle me-2"></i>Novo Exame
+        </a>
+      </div>
+    </div>
+  </section>
+
 
 
 
@@ -280,11 +338,11 @@
   </section>
   -->
 
-  <!-- Seção: Cadastro de Médico
+  <!-- Seção: Cadastro de Médico -->
   <section id="cadastroMedico" class="secao d-none">
     <div class="card p-4">
       <h4 class="mb-3 text-primary"><i class="bi bi-person-workspace me-2"></i>Cadastrar Médico</h4>
-      <form action="/register_medico" method="post">
+      <form action="/registroMedico" method="post">
         <div class="row mb-3">
           <div class="col-md-6">
             <label class="form-label">Nome</label>
@@ -314,7 +372,7 @@
     </div>
   </section>
 
-  -->
+ 
 
 
 

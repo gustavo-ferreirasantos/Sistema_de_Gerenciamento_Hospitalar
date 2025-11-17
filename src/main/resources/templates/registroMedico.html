@@ -42,6 +42,12 @@
             </div>
 
             <div class="col-md-6">
+              <label class="form-label fw-semibold">CPF</label>
+              <input type="text" class="form-control" th:field="*{cpf}" placeholder="000.000.000-00" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required>
+              <div class="invalid-feedback">Insira um CPF válido (ex: 000.000.000-00).</div>
+            </div>
+
+            <div class="col-md-6">
               <label class="form-label fw-semibold">CRM</label>
               <input type="text" class="form-control" th:field="*{crm}" placeholder="Digite o CRM" required>
               <div class="invalid-feedback">Informe um CRM válido.</div>
@@ -71,7 +77,7 @@
 
             <div class="col-12 text-center mt-4">
               <button type="submit" class="btn btn-primary px-4">Salvar</button>
-              <a href="/listMedicos" class="btn btn-secondary px-4">Cancelar</a>
+              <a href="/dashboardAdmin" class="btn btn-secondary px-4">Cancelar</a>
             </div>
           </form>
 
