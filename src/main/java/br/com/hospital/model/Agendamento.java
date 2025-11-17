@@ -3,7 +3,9 @@ package br.com.hospital.model;
 import br.com.hospital.model.Medico;
 import br.com.hospital.model.Paciente;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
@@ -12,7 +14,8 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Agendamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +36,6 @@ public abstract class Agendamento {
         AGENDADO, CANCELADO, CONCLUIDO
     }
 
-    // Construtor padrão
-    public Agendamento() {}
 
     // Construtor com todos os dados
     public Agendamento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {

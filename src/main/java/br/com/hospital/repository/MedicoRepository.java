@@ -11,4 +11,5 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     Optional<Medico> findByEmailIgnoreCase(String email);
     Optional<Medico> findByNome(String nome);
     List<Medico> findByEspecialidade(String especialidade);
+    Optional<Medico> findByCrm(String crm);
 }

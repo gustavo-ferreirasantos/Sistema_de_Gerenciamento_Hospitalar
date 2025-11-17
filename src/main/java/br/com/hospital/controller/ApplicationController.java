@@ -2,19 +2,17 @@ package br.com.hospital.controller;
 
 
 import br.com.hospital.DTO.Autenticacao;
-import br.com.hospital.model.Admin;
-import br.com.hospital.model.Informacoes;
-import br.com.hospital.model.Medico;
-import br.com.hospital.model.Paciente;
-import br.com.hospital.repository.AgendamentoRepository;
-import br.com.hospital.repository.InformacoesRepository;
-import br.com.hospital.repository.MedicoRepository;
-import br.com.hospital.repository.PacienteRepository;
+import br.com.hospital.model.*;
+import br.com.hospital.repository.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 import java.sql.Timestamp;
 
 import java.util.Optional;
@@ -24,6 +22,7 @@ public class ApplicationController {
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+    private ProcedimentoRepository procedimentoRepository;
 
     @Autowired
     private PacienteRepository pacienteRepository;
@@ -160,6 +159,37 @@ public class ApplicationController {
         ModelAndView mv = new ModelAndView("painelMedico");
         mv.addObject("paciente", pacienteRepository.findAll());
         return mv;
+    }
+
+    @PostMapping("/salvarProcedimento")
+    public String salvarProcedimento(@RequestParam("imagem") MultipartFile imagemFile) throws Exception {
+
+        Procedimento p = new Procedimento();
+
+        if (!imagemFile.isEmpty()) {
+            p.setImagem(imagemFile.getBytes());
+        }
+
+        procedimentoRepository.save(p);
+
+        return "redirect:/procedimentos";
+    }
+
+   @GetMapping("procedimentos")
+   public ModelAndView listProcedimento() {
+        return new ModelAndView("procedimentos");
+   }
+
+
+    @GetMapping("/imagem/procedimento/{id}")
+    public void mostrarImagem(@PathVariable long id, HttpServletResponse response) throws Exception {
+        Procedimento p = procedimentoRepository.findById(id).orElse(null);
+
+        if (p != null && p.getImagem() != null) {
+            response.setContentType("image/jpeg");
+            response.getOutputStream().write(p.getImagem());
+            response.getOutputStream().close();
+        }
     }
 
 

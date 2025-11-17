@@ -79,9 +79,7 @@
   <a class="nav-link active" onclick="mostrarSecao('dashboard')">
     <i class="bi bi-speedometer2 me-2"></i> Dashboard
   </a>
-  <a class="nav-link"
-     th:href="@{'/agendar/' + ${pacienteId}}"
-     onclick="sessionStorage.setItem('mostrarAgendar', true)">
+  <a class="nav-link" onclick="abrirAgendar(event)">
     <i class="bi bi-calendar-plus me-2"></i> Agendar Exame
   </a>
 <!--  <a class="nav-link" >-->
@@ -309,6 +307,10 @@
         </tbody>
       </table>
     </div>
+    <form action="/salvarProcedimento" method="post" enctype="multipart/form-data">
+      <input type="file" name="imagem" accept="image/*">
+      <button type="submit">Salvar</button>
+    </form>
   </section>
 
   <!-- Seção: Perfil -->
@@ -333,6 +335,16 @@
     sessionStorage.setItem('secaoAtiva', id); // salva o id da seção ativa
   }
 
+
+
+
+  function abrirAgendar(event) {
+    event.preventDefault();
+    sessionStorage.setItem('secaoAtiva', 'agendar');
+    mostrarSecao('agendar');
+  }
+
+
   // Restaurar a seção ativa ao recarregar a página
   document.addEventListener("DOMContentLoaded", () => {
     const secaoSalva = sessionStorage.getItem('secaoAtiva');
@@ -342,22 +354,6 @@
       mostrarSecao('dashboard'); // padrão
     }
   });
-  // --- Lógica do agendamento dinâmico ---
-  const tipos = {
-    exame: ["Hemograma", "Raio-X", "Ultrassonografia", "Ressonância Magnética"],
-    procedimento: ["Curativo", "Retirada de Ponto", "Pequena Cirurgia"],
-    consulta: ["Clínico Geral", "Cardiologia", "Dermatologia", "Pediatria"]
-  };
-
-  const medicos = {
-    exame: ["Dr. João Silva", "Dra. Amanda Rocha", "Dr. Ricardo Torres"],
-    procedimento: ["Dra. Paula Mendes", "Dr. Carlos Nunes"],
-    consulta: ["Dra. Fernanda Lima", "Dr. Gustavo Moreira", "Dra. Patrícia Farias"]
-  };
-
-  const tipoAtendimento = document.getElementById("tipoAtendimento");
-  const tipoEspecifico = document.getElementById("tipoEspecifico");
-  const medico = document.getElementById("medico");
 
   tipoAtendimento.addEventListener("change", () => {
     const tipo = tipoAtendimento.value;
