@@ -8,4 +8,7 @@ import java.util.Optional;
 public interface PacienteRepository extends JpaRepository<Paciente, Long> {
 
     Optional<Paciente> findByEmailIgnoreCase(String email);
+
+    // verifica se já existe algum paciente com o mesmo cpf no repositório
+    boolean existsByCpf(String cpf);
 }
