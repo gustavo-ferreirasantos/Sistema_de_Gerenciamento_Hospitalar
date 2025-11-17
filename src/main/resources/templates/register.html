@@ -21,10 +21,11 @@
                     <h2 class="text-center mb-4 fw-bold text-primary">Cadastro de Paciente</h2>
 
                     <!-- Erro caso o cpf seja repetido -->
-                    <div th:if="${erro}" class="alert alert-danger text-center" role="alert">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        <span th:text="${erro}"></span>
+                    <div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2">CPF já cadastrado</i>
+                        <span></span>
                     </div>
+
 
                     <form method="POST" th:action="@{/register}" th:object="${paciente}" class="row g-3 needs-validation" novalidate>
                         <input type="hidden" th:field="*{id}"/>

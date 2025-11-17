@@ -73,7 +73,7 @@ public class ApplicationController {
     public String login_admin(@ModelAttribute Autenticacao autenticacao) {
         Paciente service = new Paciente();
         if(autenticacao.getEmail().equals("admin@gmail.com")) {
-            return "redirect:/list";
+            return "redirect:/dashboardAdmin";
         }else {
             return "redirect:/login/admin?error";
         }
@@ -89,13 +89,10 @@ public class ApplicationController {
     @PostMapping("/register")
     public String register(Paciente paciente) {
         // verifica a duplicidade de CPFs
-        if (pacienteRepository.existsByCpf(paciente.getCpf())){
-            redirectAttributes.addFlashAttribute("erro", "CPF já cadastrado.");
+        if (!adminService.adicionarPaciente(pacienteRepository, paciente)){
             return "redirect:/register?error";
         }
-        
-        adminService.adicionarPaciente(pacienteRepository, paciente);
-        return "redirect:/lista";
+        return "redirect:/login";
     }
 
     @GetMapping("/registroMedico")
@@ -111,9 +108,9 @@ public class ApplicationController {
         return "redirect:/listaMedicos";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/dashboardAdmin")
     public ModelAndView list() {
-        ModelAndView mv = new ModelAndView("lista");
+        ModelAndView mv = new ModelAndView("dashboardAdmin");
         mv.addObject("pacientes", pacienteRepository.findAll());
         return mv;
     }
@@ -126,11 +123,18 @@ public class ApplicationController {
         return mv;
     }
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
+    @GetMapping("/delete/paciente/{id}")
+    public String deletePaciente(@PathVariable("id") Long id) {
         pacienteRepository.deleteById(id);
-        return "redirect:/list";
+        return "redirect:/dashboardAdmin";
     }
+
+    @GetMapping("/delete/medico/{id}")
+    public String deleteMedico(@PathVariable("id") Long id) {
+        medicoRepository.deleteById(id);
+        return "redirect:/dashboardAdmin";
+    }
+
 
     @GetMapping("/dashboard/{id}")
     public ModelAndView dashboard(@PathVariable("id") Long id) {
