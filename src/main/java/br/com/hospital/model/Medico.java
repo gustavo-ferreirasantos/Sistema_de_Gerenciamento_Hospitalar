@@ -1,8 +1,12 @@
 package br.com.hospital.model;
 
+// comparação das IDs dos médicos
+import java.util.Objects;
 import br.com.hospital.repository.AgendamentoRepository;
 import br.com.hospital.repository.MedicoRepository;
 import br.com.hospital.repository.PacienteRepository;
+import br.com.hospital.model.Agendamento;
+import br.com.hospital.model.Agendamento.StatusAgendamento;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -50,7 +54,28 @@ public class Medico extends User{
         return false;
     }
 
-    public boolean realizarAtendimento(AgendamentoRepository agendamentoRepository, PacienteRepository pacienteRepository, MedicoRepository medicoRepository) {
+    // para o agendamento, não são necessários os repositórios de médico e paciente
+    public boolean realizarAtendimento(Agendamento agendamento, AgendamentoRepository agendamentoRepository) {
+        // verifica, primeiro, se o agendamento existe para que o atendimento seja realizado
+        if (agendamento == null){
+            return false;
+        }
+
+        // verifica se o médico do agendamento é o mesmo da classe
+        if (!Objects.equals(agendamento.getMedico().getId(), this.getId())){
+            return false;
+        }
+
+        // se o status do agendamento for "AGENDADO" e o médico for o mesmo, ele é concluído e salvo no repositório
+        if (agendamento.getStatus() == StatusAgendamento.AGENDADO){
+            // define o atendimento como CONCLUÍDO e salva no repositório
+            agendamento.setStatus(StatusAgendamento.CONCLUIDO);
+            agendamentoRepository.save(agendamento);
+
+            return true;
+        }
+        
+        // caso não tenha sido possível realizar o atendimento
         return false;
     }
 
