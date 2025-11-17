@@ -8,7 +8,8 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-
+@Getter
+@Setter
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 
