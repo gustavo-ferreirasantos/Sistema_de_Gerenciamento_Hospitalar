@@ -19,7 +19,7 @@
 
           <h2 class="text-center mb-4 fw-bold text-primary">Cadastro de Médico</h2>
 
-          <form method="POST" th:action="@{/registroMedico}" th:object="${medico}" class="row g-3 needs-validation" novalidate>
+          <form method="POST" th:action="@{/registroMedico}" th:object="${medico}" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
             <input type="hidden" th:field="*{id}"/>
 
             <!-- Dados pessoais -->
@@ -52,6 +52,13 @@
               <input type="text" class="form-control" th:field="*{crm}" placeholder="Digite o CRM" required>
               <div class="invalid-feedback">Informe um CRM válido.</div>
             </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Foto</label>
+              <input type="file" name="fotoUpload" accept="image/*" class="form-control" required>
+              <div class="invalid-feedback">Selecione uma foto.</div>
+            </div>
+
 
             <hr class="my-4">
 

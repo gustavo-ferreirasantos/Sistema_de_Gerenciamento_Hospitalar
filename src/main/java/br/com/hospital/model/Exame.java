@@ -11,7 +11,6 @@ import lombok.Setter;
 import java.sql.Timestamp;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter

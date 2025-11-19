@@ -151,54 +151,121 @@
     </div>
   </section>
 
-
-
   <!-- Seção: Agendar -->
+
+<!--  <section id="agendar" class="secao d-none">-->
+<!--    <div class="card p-4">-->
+<!--      <h4 class="mb-3"><i class="bi bi-calendar-plus me-2"></i>Agendar Atendimento</h4>-->
+
+<!--      &lt;!&ndash; Envia para /agendar via POST &ndash;&gt;-->
+<!--      <form id="formAgendamento" action="/agendar" method="post">-->
+
+<!--        &lt;!&ndash; ID do paciente (campo oculto) &ndash;&gt;-->
+<!--        <input type="hidden" name="pacienteId" value="${paciente.id}">-->
+
+<!--        <div class="row mb-3">-->
+<!--          &lt;!&ndash; Tipo principal &ndash;&gt;-->
+<!--          <div class="col-md-4">-->
+<!--            <label for="tipoAtendimento" class="form-label">Tipo de Atendimento</label>-->
+<!--            <select id="tipoAtendimento" nome="tipoAtendimento" class="form-select" required>-->
+<!--              <option selected disabled>Selecione...</option>-->
+<!--              <option value="exame">Exame</option>-->
+<!--              <option value="procedimento">Procedimento</option>-->
+<!--              <option value="consulta">Consulta</option>-->
+<!--            </select>-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Tipo específico &ndash;&gt;-->
+<!--          <div class="col-md-4">-->
+<!--            <label for="tipoEspecifico" class="form-label">Tipo</label>-->
+<!--            <select id="tipoEspecifico" name="tipoEspecifico" class="form-select" required>-->
+<!--              <option selected disabled>Selecione o tipo...</option>-->
+<!--            </select>-->
+<!--          </div>-->
+
+<!--          &lt;!&ndash; Médico &ndash;&gt;-->
+<!--          <div class="col-md-4">-->
+<!--            <label for="medico" class="form-label">Médico Responsável</label>-->
+<!--            <select id="medico" name="medico" class="form-select" required>-->
+<!--              <option selected disabled>Selecione o médico...</option>-->
+<!--            </select>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Data e hora &ndash;&gt;-->
+<!--        <div class="row mb-3">-->
+<!--          <div class="col-md-6">-->
+<!--            <label for="data" class="form-label">Data</label>-->
+<!--            <input type="date" id="data" name="data" class="form-control" required>-->
+<!--          </div>-->
+<!--          <div class="col-md-6">-->
+<!--            <label for="hora" class="form-label">Hora</label>-->
+<!--            <input type="time" id="hora" name="hora" class="form-control" required>-->
+<!--          </div>-->
+<!--        </div>-->
+
+<!--        <button type="submit" class="btn btn-hospital mt-3">-->
+<!--          <i class="bi bi-check2-circle me-2"></i>Confirmar Agendamento-->
+<!--        </button>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </section>-->
+
+
   <section id="agendar" class="secao d-none">
     <div class="card p-4">
+
       <h4 class="mb-3"><i class="bi bi-calendar-plus me-2"></i>Agendar Atendimento</h4>
-
-      <form id="formAgendamento">
-        <div class="row mb-3">
-
-          <!-- Tipo principal -->
-          <div class="col-md-4">
+      <!-- Passo 1: Tipo de Atendimento -->
+      <form method="get" th:action="@{'/agendar/' + ${pacienteId}}" class="mb-3">
+        <div class="row">
+          <div class="col-md-6">
             <label for="tipoAtendimento" class="form-label">Tipo de Atendimento</label>
-            <select id="tipoAtendimento" class="form-select" required>
-              <option selected disabled>Selecione...</option>
-              <option value="exame">Exame</option>
-              <option value="procedimento">Procedimento</option>
-              <option value="consulta">Consulta</option>
+            <select id="tipoAtendimento" name="tipoAtendimento" class="form-select" onchange="this.form.submit()" required>
+              <option value="">Selecione...</option>
+              <th:block th:each="tipo : ${tiposAtendimento}">
+                <option th:value="${tipo}" th:text="${tipo}" th:selected="${param.tipoAtendimento} == ${tipo}"></option>
+              </th:block>
             </select>
           </div>
+        </div>
+      </form>
 
-          <!-- Tipo específico -->
-          <div class="col-md-4">
-            <label for="tipoEspecifico" class="form-label">Tipo</label>
-            <select id="tipoEspecifico" class="form-select" required disabled>
-              <option selected disabled>Selecione o tipo...</option>
-            </select>
-          </div>
+      <!-- Passo 2: Dados finais -->
+      <form method="post" action="/agendar">
+        <input type="hidden" name="pacienteId" th:value="${pacienteId}">
+        <input type="hidden" name="tipoAtendimento" th:value="${param.tipoAtendimento}">
 
-          <!-- Médico -->
-          <div class="col-md-4">
+        <div class="row mb-3">
+          <div class="col-md-6">
             <label for="medico" class="form-label">Médico Responsável</label>
-            <select id="medico" class="form-select" required disabled>
+            <select id="medico" name="medico" class="form-select" required>
               <option selected disabled>Selecione o médico...</option>
+              <th:block th:each="med : ${medicos}">
+                <option th:value="${med.nome}" th:text="${med.nome}"></option>
+              </th:block>
+            </select>
+          </div>
+
+          <div class="col-md-6">
+            <label for="tipoEspecifico" class="form-label">Tipo Específico</label>
+            <select id="tipoEspecifico" name="tipoEspecifico" class="form-select" required>
+              <option selected disabled>Selecione o tipo...</option>
+              <th:block th:each="info : ${tiposEspecificos}">
+                <option th:value="${info.nome}" th:text="${info.nome}"></option>
+              </th:block>
             </select>
           </div>
         </div>
 
-        <!-- Data e hora -->
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="data" class="form-label">Data</label>
-            <input type="date" id="data" class="form-control" required>
+            <input type="date" id="data" name="data" class="form-control" required>
           </div>
-
           <div class="col-md-6">
             <label for="hora" class="form-label">Hora</label>
-            <input type="time" id="hora" class="form-control" required>
+            <input type="time" id="hora" name="hora" class="form-control" required>
           </div>
         </div>
 
@@ -208,6 +275,7 @@
       </form>
     </div>
   </section>
+
 
 
   <!-- Seção: Resultados -->

@@ -27,7 +27,7 @@
                     </div>
 
 
-                    <form method="POST" th:action="@{'/registro'}" th:object="${paciente}" class="row g-3 needs-validation" novalidate>
+                    <form method="POST" th:action="@{'/registro'}" th:object="${paciente}" class="row g-3 needs-validation" enctype="multipart/form-data" novalidate>
                         <input type="hidden" th:field="*{id}"/>
 
                         <!-- Dados pessoais -->
@@ -53,6 +53,12 @@
                             <label class="form-label fw-semibold">CPF</label>
                             <input type="text" class="form-control" th:field="*{cpf}" placeholder="000.000.000-00" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" required>
                             <div class="invalid-feedback">Insira um CPF válido (ex: 000.000.000-00).</div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold">Foto</label>
+                            <input type="file" name="fotoUpload" accept="image/*" class="form-control" required>
+                            <div class="invalid-feedback">Selecione uma foto.</div>
                         </div>
 
                         <hr class="my-4">

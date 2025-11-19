@@ -7,10 +7,7 @@ import br.com.hospital.repository.MedicoRepository;
 import br.com.hospital.repository.PacienteRepository;
 import br.com.hospital.model.Agendamento;
 import br.com.hospital.model.Agendamento.StatusAgendamento;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +30,8 @@ public class Medico extends User{
     private int cargaHoraria;
     @Embedded
     Endereco endereco;
+    @Lob
+    private byte[] foto;
     private int horasTrabalhadas = 0;
 
 

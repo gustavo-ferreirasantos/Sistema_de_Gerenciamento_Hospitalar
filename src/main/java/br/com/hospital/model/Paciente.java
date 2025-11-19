@@ -24,11 +24,14 @@ public class Paciente extends User {
     @Embedded
     private Endereco endereco;
     private String cpf;
+    @Lob
+    private byte[] foto;
 
 
-    public Paciente(int id, String name, String email, String password, Endereco endereco, String cpf) {
+    public Paciente(int id, String name, String email, String password, Endereco endereco, byte[] foto, String cpf) {
         super(name, email, password);
         this.endereco = endereco;
+        this.foto = foto;
         setCpf(cpf);
     }
 
@@ -109,7 +112,7 @@ public class Paciente extends User {
             Medico medico,
             Timestamp data,
             Informacoes informacoes,
-            JpaRepository<T, Integer> repository) {
+            JpaRepository<T, Long> repository) {
 
         // Disponibilidade
         if (!medico.disponivel(medico, informacoes)) {

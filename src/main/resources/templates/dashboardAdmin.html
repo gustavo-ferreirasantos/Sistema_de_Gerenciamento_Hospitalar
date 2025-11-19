@@ -121,6 +121,7 @@
         <thead class="table-primary">
         <tr>
           <th>Id</th>
+          <th>Foto</th>
           <th>Nome</th>
           <th>E-mail</th>
           <th>Senha</th>
@@ -132,6 +133,15 @@
         <tbody>
         <tr th:each="paciente : ${pacientes}">
           <td th:text="${paciente.id}"></td>
+          <!-- FOTO VIA ENDPOINT -->
+          <td>
+            <img th:if="${paciente.foto!= null}"
+                 th:src="@{'/imagem/paciente/' + ${paciente.id}}"
+                 class="rounded-circle"
+                 width="50" height="50">
+
+            <span th:if="${paciente.foto == null}" class="text-muted">Sem foto</span>
+          </td>
           <td th:text="${paciente.nome}"></td>
           <td th:text="${paciente.email}"></td>
           <td th:text="${paciente.password}"></td>
@@ -203,6 +213,7 @@
         <thead class="table-primary">
         <tr>
           <th>ID</th>
+          <th>Foto</th>
           <th>Nome</th>
           <th>Email</th>
           <th>Senha</th>
@@ -211,18 +222,32 @@
           <th>Ações</th>
         </tr>
         </thead>
+
         <tbody>
         <tr th:each="m : ${medicos}">
           <td th:text="${m.id}"></td>
+
+          <!-- FOTO VIA ENDPOINT -->
+          <td>
+            <img th:if="${m.foto != null}"
+                 th:src="@{'/imagem/medico/' + ${m.id}}"
+                 class="rounded-circle"
+                 width="50" height="50">
+
+            <span th:if="${m.foto == null}" class="text-muted">Sem foto</span>
+          </td>
+
           <td th:text="${m.nome}"></td>
           <td th:text="${m.email}"></td>
           <td th:text="${m.password}"></td>
           <td th:text="${m.crm}"></td>
           <td th:text="${m.especialidade}"></td>
+
           <td>
             <a th:href="@{'/edit/medico/' + ${m.id}}" class="btn btn-sm btn-outline-warning me-2">
               <i class="bi bi-pencil"></i> Editar
             </a>
+
             <button class="btn btn-sm btn-outline-danger"
                     th:attr="data-id=${m.id}"
                     onclick="confirmDelete(this, 'medico')">
@@ -230,8 +255,9 @@
             </button>
           </td>
         </tr>
+
         <tr th:if="${#lists.isEmpty(medicos)}">
-          <td colspan="7" class="no-data">Nenhum médico cadastrado.</td>
+          <td colspan="8" class="no-data">Nenhum médico cadastrado.</td>
         </tr>
         </tbody>
       </table>

@@ -107,9 +107,44 @@ public class ApplicationController {
     }
 
     @PostMapping("/registroMedico")
-    public String registroMedico(@ModelAttribute Medico medico) {
+    public String registroMedico(@ModelAttribute Medico medico, @RequestParam("fotoUpload") MultipartFile foto) {
+        try {
+            if (!foto.isEmpty()) {
+                medico.setFoto(foto.getBytes());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         medicoRepository.save(medico);
         return "redirect:/dashboardAdmin";
+    }
+
+
+    @GetMapping("/imagem/medico/{id}")
+    public void mostrarFotoMedico(
+            @PathVariable Long id,
+            HttpServletResponse response) throws Exception {
+
+        Medico medico = medicoRepository.findById(id).orElse(null);
+
+        if (medico != null && medico.getFoto() != null) {
+            response.setContentType("image/jpeg");
+            response.getOutputStream().write(medico.getFoto());
+            response.getOutputStream().close();
+        }
+    }
+
+    @GetMapping("/imagem/paciente/{id}")
+    public void mostrarFotoPaciente(
+            @PathVariable Long id,
+            HttpServletResponse response) throws Exception {
+        Paciente paciente = pacienteRepository.findById(id).orElse(null);
+
+        if (paciente != null && paciente.getFoto() != null) {
+            response.setContentType("image/jpeg");
+            response.getOutputStream().write(paciente.getFoto());
+            response.getOutputStream().close();
+        }
     }
 
 
@@ -259,48 +294,83 @@ public class ApplicationController {
 
 
 
-/*
+
+    @GetMapping("/agendar/{idPaciente}/1")
+    public ModelAndView agendarEtapa1(
+            @PathVariable Long idPaciente,
+            @RequestParam(required = false) String tipoAtendimento
+    ) {
+        ModelAndView mv = new ModelAndView("agendar");
+
+        mv.addObject("pacienteId", idPaciente);
+        mv.addObject("tiposAtendimento", informacoesRepository.findDistinctTipos());
+        mv.addObject("tipoSelecionado", tipoAtendimento);
+
+        if (tipoAtendimento != null) {
+            mv.addObject("tiposEspecificos",
+                    informacoesRepository.findByEspecialidadeRelacionada(tipoAtendimento));
+        }
+
+        return mv;
+    }
+
+
+
+    @GetMapping("/agendar/{idPaciente}/2")
+    public ModelAndView agendarEtapa2(
+            @PathVariable Long idPaciente,
+            @RequestParam String tipoAtendimento,
+            @RequestParam(required = false) String tipoEspecifico
+    ) {
+        ModelAndView mv = new ModelAndView("agendar");
+
+        mv.addObject("pacienteId", idPaciente);
+        mv.addObject("tipoSelecionado", tipoAtendimento);
+        mv.addObject("tiposEspecificos",
+                informacoesRepository.findByEspecialidadeRelacionada(tipoAtendimento));
+
+        if (tipoEspecifico != null) {
+            mv.addObject("tipoEspecificoSelecionado", tipoEspecifico);
+            mv.addObject("medicos", medicoRepository.findByEspecialidade(tipoAtendimento));
+        }
+
+        return mv;
+    }
+
+
+
     @PostMapping("/agendar")
-    public String agendar(
-            @RequestParam("pacienteId") int pacienteId,
-            @RequestParam("tipoAtendimento") String tipoAtendimento,
-            @RequestParam("tipoEspecifico") String tipoEspecifico,
-            @RequestParam("medico") String nomeMedico,
-            @RequestParam("data") String data,
-            @RequestParam("hora") String hora,
-            RedirectAttributes redirectAttributes
+    public String finalizarAgendamento(
+            @RequestParam Long pacienteId,
+            @RequestParam String tipoAtendimento,
+            @RequestParam String tipoEspecifico,
+            @RequestParam String medico,
+            @RequestParam String data,
+            @RequestParam String hora,
+            RedirectAttributes redirect
     ) {
         try {
-            Paciente paciente = pacienteRepository.findById((long) pacienteId).orElseThrow();
-            Medico medico = medicoRepository.findByNome(nomeMedico).orElseThrow();
+            Paciente p = pacienteRepository.findById(pacienteId).orElseThrow();
+            Medico m = medicoRepository.findByNome(medico).orElseThrow();
+            Informacoes info = informacoesRepository.findByNome(tipoEspecifico).orElseThrow();
 
-            // Busca o tipo de informação (Exame, Consulta, Procedimento)
-            Informacoes informacoes = informacoesRepository.findByNome(tipoEspecifico).orElseThrow();
+            Timestamp ts = Timestamp.valueOf(data + " " + hora + ":00");
 
-            // Monta a data (aqui você pode ajustar o formato conforme necessário)
-            Timestamp dataCompleta = java.sql.Timestamp.valueOf(data + " " + hora + ":00");
-
-            boolean sucesso = false;
-            switch (tipoAtendimento) {
-                case "Exame" ->
-                        sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, exameRepository);
-                case "Procedimento" ->
-                        sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, procedimentoRepository);
-                case "Consulta" ->
-                        sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, consultaRepository);
-                default ->
-                        throw new IllegalArgumentException("Tipo não reconhecido: " + tipoAtendimento);
-            }
-
+            boolean sucesso = switch (tipoAtendimento) {
+                case "Exame" -> pacienteService.agendar(p, m, ts, info, exameRepository);
+                case "Procedimento" -> pacienteService.agendar(p, m, ts, info, procedimentoRepository);
+                case "Consulta" -> pacienteService.agendar(p, m, ts, info, consultaRepository);
+                default -> throw new RuntimeException("Tipo inválido");
+            };
 
             return "redirect:/dashboard/" + pacienteId;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            redirectAttributes.addFlashAttribute("erro", "❌ Erro ao realizar agendamento: " + e.getMessage());
+            redirect.addFlashAttribute("erro", "Erro: " + e.getMessage());
             return "redirect:/dashboard/" + pacienteId;
         }
     }
 
-*/
+
+
 }
