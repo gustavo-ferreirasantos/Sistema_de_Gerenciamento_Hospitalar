@@ -325,14 +325,20 @@
 </div>
 
 <script th:inline="javascript">
-  /*<![CDATA[*/
-  // Alternar seções
+
   function mostrarSecao(id) {
     document.querySelectorAll('.secao').forEach(secao => secao.classList.add('d-none'));
     document.getElementById(id).classList.remove('d-none');
-    document.querySelectorAll('.sidebar a').forEach(link => link.classList.remove('active'));
-    event.target.classList.add('active');
-    sessionStorage.setItem('secaoAtiva', id); // salva o id da seção ativa
+
+    // Atualiza itens do menu
+    document.querySelectorAll('.sidebar a').forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute("onclick")?.includes(id)) {
+        link.classList.add('active');
+      }
+    });
+
+    sessionStorage.setItem('secaoAtiva', id);
   }
 
 
@@ -394,6 +400,19 @@
     }
   });
   /*]]>*/
+
+
+
+  // Restaurar seção ativa ao carregar a página
+  document.addEventListener("DOMContentLoaded", function () {
+    const secaoSalva = sessionStorage.getItem("secaoAtiva");
+
+    if (secaoSalva) {
+      mostrarSecao(secaoSalva);
+    } else {
+      mostrarSecao("dashboard"); // padrão
+    }
+  });
 </script>
 
 

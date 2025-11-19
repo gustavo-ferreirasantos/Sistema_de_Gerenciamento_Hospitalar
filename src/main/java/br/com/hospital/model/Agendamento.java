@@ -13,9 +13,9 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 @NoArgsConstructor
+@MappedSuperclass
 public abstract class Agendamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

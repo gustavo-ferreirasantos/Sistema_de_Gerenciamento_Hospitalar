@@ -23,6 +23,10 @@ public class ApplicationController {
     @Autowired
     private ProcedimentoRepository procedimentoRepository;
     @Autowired
+    private ConsultaRepository consultaRepository;
+    @Autowired
+    private ExameRepository exameRepository;
+    @Autowired
     private InformacoesRepository informacoesRepository;
     @Autowired
     private PacienteRepository pacienteRepository;
@@ -185,7 +189,7 @@ public class ApplicationController {
         return mv;
     }
 
-    @GetMapping("/painel")
+    @GetMapping("/painelMedico")
     public ModelAndView painel() {
         ModelAndView mv = new ModelAndView("painelMedico");
         mv.addObject("paciente", pacienteRepository.findAll());
@@ -255,7 +259,7 @@ public class ApplicationController {
 
 
 
-
+/*
     @PostMapping("/agendar")
     public String agendar(
             @RequestParam("pacienteId") int pacienteId,
@@ -276,7 +280,18 @@ public class ApplicationController {
             // Monta a data (aqui você pode ajustar o formato conforme necessário)
             Timestamp dataCompleta = java.sql.Timestamp.valueOf(data + " " + hora + ":00");
 
-            boolean sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, agendamentoRepository);
+            boolean sucesso = false;
+            switch (tipoAtendimento) {
+                case "Exame" ->
+                        sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, exameRepository);
+                case "Procedimento" ->
+                        sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, procedimentoRepository);
+                case "Consulta" ->
+                        sucesso = pacienteService.agendar(paciente, medico, dataCompleta, informacoes, consultaRepository);
+                default ->
+                        throw new IllegalArgumentException("Tipo não reconhecido: " + tipoAtendimento);
+            }
+
 
             return "redirect:/dashboard/" + pacienteId;
 
@@ -287,5 +302,5 @@ public class ApplicationController {
         }
     }
 
-
+*/
 }

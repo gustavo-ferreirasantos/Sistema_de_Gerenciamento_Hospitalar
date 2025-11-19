@@ -104,28 +104,34 @@ public class Paciente extends User {
     }
 
 
-    public boolean agendar(Paciente paciente, Medico medico, Timestamp data, Informacoes informacoes, AgendamentoRepository repository) {
-        int tempoNecessario = informacoes.getTempoNecessario();
-        int horasTrabalhadas = medico.getHorasTrabalhadas();
+    public <T extends Agendamento> boolean agendar(
+            Paciente paciente,
+            Medico medico,
+            Timestamp data,
+            Informacoes informacoes,
+            JpaRepository<T, Integer> repository) {
 
-        // Verifica se o médico ainda tem disponibilidade
-        if (tempoNecessario + horasTrabalhadas <= medico.getCargaHoraria()) {
-            medico.setHorasTrabalhadas(horasTrabalhadas + tempoNecessario);
-
-            Agendamento agendamento = switch (informacoes.getTipoAgendamento()) {
-                case Exame -> new Exame(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
-                case Consulta -> new Consulta(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
-                case Procedimento -> new Procedimento(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
-                default ->
-                        throw new IllegalArgumentException("Tipo de agendamento desconhecido: " + informacoes.getTipoAgendamento());
-            };
-
-            // Cria o tipo de agendamento com base no enum dentro de Informacoes
-            repository.save(agendamento);
-            return true;
+        // Disponibilidade
+        if (!medico.disponivel(medico, informacoes)) {
+            return false;
         }
-        return false;
+
+        medico.setHorasTrabalhadas(
+                medico.getHorasTrabalhadas() + informacoes.getTempoNecessario()
+        );
+
+        T novoAgendamento = switch (informacoes.getTipoAgendamento()) {
+            case Consulta -> (T) new Consulta(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
+
+            case Exame -> (T) new Exame(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
+
+            case Procedimento -> (T) new Procedimento(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
+        };
+
+        repository.save(novoAgendamento);
+        return true;
     }
+
 
 
 
