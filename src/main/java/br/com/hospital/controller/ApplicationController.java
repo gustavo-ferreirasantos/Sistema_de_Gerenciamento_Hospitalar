@@ -1,7 +1,6 @@
 package br.com.hospital.controller;
 
 
-import br.com.hospital.DTO.Autenticacao;
 import br.com.hospital.model.*;
 import br.com.hospital.repository.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 
 import java.util.Optional;
@@ -22,16 +20,18 @@ public class ApplicationController {
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+    @Autowired
     private ProcedimentoRepository procedimentoRepository;
-
-    @Autowired
-    private PacienteRepository pacienteRepository;
-
-    @Autowired
-    private MedicoRepository medicoRepository;
-
     @Autowired
     private InformacoesRepository informacoesRepository;
+    @Autowired
+    private PacienteRepository pacienteRepository;
+    @Autowired
+    private MedicoRepository medicoRepository;
+    @Autowired
+    private AdminRepository adminRepository;
+
+
 
     private final Paciente pacienteService = new Paciente();
     private final Admin adminService = new Admin();
@@ -43,15 +43,12 @@ public class ApplicationController {
 
     @GetMapping("/login")
     public ModelAndView loginForm() {
-        ModelAndView mv = new ModelAndView("login");
-        return mv;
+        return new ModelAndView("login");
     }
 
     @GetMapping("/loginAdmin")
     public ModelAndView login_admin() {
-        ModelAndView mv = new ModelAndView("login_admin");
-        mv.addObject("autenticacao", new Autenticacao());
-        return mv;
+        return new ModelAndView("loginAdmin");
     }
 
     @PostMapping("/login")
@@ -69,14 +66,18 @@ public class ApplicationController {
     }
 
     @PostMapping("/loginAdmin")
-    public String login_admin(@ModelAttribute Autenticacao autenticacao) {
-        Paciente service = new Paciente();
-        if(autenticacao.getEmail().equals("admin@gmail.com")) {
+    public String loginAdmin(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password) {
+
+        if(adminService.autenticar(email, password, adminRepository)) {
             return "redirect:/dashboardAdmin";
-        }else {
-            return "redirect:/login/admin?error";
+        }else{
+            return "redirect:/loginAdmin?error";
         }
     }
+
+
 
     @GetMapping("/registro")
     public ModelAndView registroForm() {
@@ -106,6 +107,30 @@ public class ApplicationController {
         medicoRepository.save(medico);
         return "redirect:/dashboardAdmin";
     }
+
+
+    @GetMapping("/cadastroServico")
+    public ModelAndView cadastroServicoForm() {
+        ModelAndView mv = new ModelAndView("cadastroServicos");
+        mv.addObject("informacao", new Informacoes());
+        return mv;
+    }
+
+
+    @GetMapping("/cadastroServico/{id}")
+    public ModelAndView editarServico(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("cadastroServicos");
+        mv.addObject("informacao", informacoesRepository.findById(id).orElse(new Informacoes()));
+        return mv;
+    }
+
+
+    @PostMapping("/cadastroServico")
+    public String cadastroServico(@ModelAttribute Informacoes info) {
+        informacoesRepository.save(info);
+        return "redirect:/dashboardAdmin";
+    }
+
 
     @GetMapping("/dashboardAdmin")
     public ModelAndView list() {
@@ -141,6 +166,12 @@ public class ApplicationController {
     @GetMapping("/delete/medico/{id}")
     public String deleteMedico(@PathVariable("id") Long id) {
         medicoRepository.deleteById(id);
+        return "redirect:/dashboardAdmin";
+    }
+
+    @GetMapping("/delete/servico/{id}")
+    public String deleteServico(@PathVariable("id") Long id) {
+        informacoesRepository.deleteById(id);
         return "redirect:/dashboardAdmin";
     }
 

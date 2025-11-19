@@ -47,6 +47,14 @@ public class Medico extends User{
 
 
 
+    public boolean disponivel(Medico medico, Informacoes informacoes){
+        if(!(medico.getCargaHoraria() == medico.getHorasTrabalhadas())){
+            if((medico.getHorasTrabalhadas() + informacoes.getTempoNecessario()) <= medico.getCargaHoraria()){
+                return true;
+            }
+        }
+        return false;
+    }
 
 
     @Override

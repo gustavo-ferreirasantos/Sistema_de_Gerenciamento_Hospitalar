@@ -246,10 +246,10 @@
 
 
 
-  <!-- Seção: Lista de Exames -->
+  <!-- Seção: Lista de Serviços -->
   <section id="exames" class="secao d-none">
     <div class="table-container">
-      <h4 class="mb-4 text-primary text-center fw-bold">Lista de Exames</h4>
+      <h4 class="mb-4 text-primary text-center fw-bold">Lista de Serviços</h4>
 
       <table class="table table-striped table-hover align-middle text-center">
         <thead class="table-primary">
@@ -272,27 +272,27 @@
           <td th:text="${info.tipoAgendamento}"></td>
           <td th:text="${info.especialidadeRelacionada}"></td>
           <td>
-            <a th:href="@{'/edit/informacao/' + ${info.id}}" class="btn btn-sm btn-outline-warning me-2">
+            <a th:href="@{'/cadastroServico/' + ${info.id}}" class="btn btn-sm btn-outline-warning me-2">
               <i class="bi bi-pencil"></i> Editar
             </a>
             <button class="btn btn-sm btn-outline-danger"
                     th:attr="data-id=${info.id}"
-                    onclick="confirmDelete(this, 'informacao')">
+                    onclick="confirmDelete(this, 'servico')">
               <i class="bi bi-trash"></i> Excluir
             </button>
           </td>
         </tr>
 
         <tr th:if="${#lists.isEmpty(informacoes)}">
-          <td colspan="7" class="no-data">Nenhum exame cadastrado.</td>
+          <td colspan="7" class="no-data">Nenhum serviço cadastrado.</td>
         </tr>
 
         </tbody>
       </table>
 
       <div class="text-center mt-4">
-        <a href="/cadastroInformacao" class="btn btn-hospital px-4">
-          <i class="bi bi-plus-circle me-2"></i>Novo Exame
+        <a href="/cadastroServico" class="btn btn-hospital px-4">
+          <i class="bi bi-plus-circle me-2"></i>Novo Serviço
         </a>
       </div>
     </div>
@@ -300,45 +300,7 @@
 
 
 
-
-
-
-  <!-- Seção: Cadastro de Paciente
-  <section id="cadastroPaciente" class="secao d-none">
-    <div class="card p-4">
-      <h4 class="mb-3 text-primary"><i class="bi bi-person-plus me-2"></i>Cadastrar Paciente</h4>
-      <form action="/register" method="post">
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Nome</label>
-            <input type="text" class="form-control" name="nome" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">E-mail</label>
-            <input type="email" class="form-control" name="email" required>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label class="form-label">Senha</label>
-            <input type="password" class="form-control" name="password" required>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">CPF</label>
-            <input type="text" class="form-control" name="cpf" required>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">CEP</label>
-            <input type="text" class="form-control" name="cep" required>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-hospital mt-2">Salvar</button>
-      </form>
-    </div>
-  </section>
-  -->
-
-  <!-- Seção: Cadastro de Médico -->
+  <!-- Seção: Cadastro de Médico
   <section id="cadastroMedico" class="secao d-none">
     <div class="card p-4">
       <h4 class="mb-3 text-primary"><i class="bi bi-person-workspace me-2"></i>Cadastrar Médico</h4>
@@ -371,7 +333,7 @@
       </form>
     </div>
   </section>
-
+-->
  
 
 

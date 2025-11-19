@@ -25,15 +25,16 @@
       <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
 
         <!-- FORMULÁRIO DE LOGIN ADMIN -->
-        <form method="POST" th:action="@{/loginAdmin}" th:object="${autenticacao}">
+        <form method="POST" th:action="@{/loginAdmin}">
 
-          <h3 class="mb-4 text-center fw-bold">Área Administrativa</h3>
+
+        <h3 class="mb-4 text-center fw-bold">Área Administrativa</h3>
 
           <!-- Email -->
           <div class="form-outline mb-4">
             <input type="email" id="adminEmail" class="form-control form-control-lg"
                    placeholder="Digite o e-mail do administrador"
-                   th:field="*{email}" required>
+                   name="email" required>
             <label class="form-label" for="adminEmail">E-mail do administrador</label>
           </div>
 
@@ -41,7 +42,7 @@
           <div class="form-outline mb-3">
             <input type="password" id="adminPassword" class="form-control form-control-lg"
                    placeholder="Digite a senha de acesso"
-                   th:field="*{password}" required>
+                   name="password" required>
             <label class="form-label" for="adminPassword">Senha</label>
           </div>
 
