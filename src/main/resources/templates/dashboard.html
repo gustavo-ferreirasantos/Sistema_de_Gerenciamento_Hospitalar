@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -79,12 +79,9 @@
   <a class="nav-link active" onclick="mostrarSecao('dashboard')">
     <i class="bi bi-speedometer2 me-2"></i> Dashboard
   </a>
-  <a class="nav-link" onclick="abrirAgendar(event)">
-    <i class="bi bi-calendar-plus me-2"></i> Agendar Exame
+  <a class="nav-link" th:href="@{'/agendamento/' + ${paciente.id} + '/tipo'}">
+    <i class="bi bi-calendar-plus me-2"></i> Agendar
   </a>
-<!--  <a class="nav-link" >-->
-<!--    <i class="bi bi-calendar-plus me-2"></i> Agendar Exame-->
-<!--  </a>-->
   <a class="nav-link" onclick="mostrarSecao('resultados')">
     <i class="bi bi-file-medical me-2"></i> Resultados
   </a>
@@ -151,65 +148,6 @@
     </div>
   </section>
 
-
-
-  <!-- Seção: Agendar -->
-  <section id="agendar" class="secao d-none">
-    <div class="card p-4">
-      <h4 class="mb-3"><i class="bi bi-calendar-plus me-2"></i>Agendar Atendimento</h4>
-
-      <form id="formAgendamento">
-        <div class="row mb-3">
-
-          <!-- Tipo principal -->
-          <div class="col-md-4">
-            <label for="tipoAtendimento" class="form-label">Tipo de Atendimento</label>
-            <select id="tipoAtendimento" class="form-select" required>
-              <option selected disabled>Selecione...</option>
-              <option value="exame">Exame</option>
-              <option value="procedimento">Procedimento</option>
-              <option value="consulta">Consulta</option>
-            </select>
-          </div>
-
-          <!-- Tipo específico -->
-          <div class="col-md-4">
-            <label for="tipoEspecifico" class="form-label">Tipo</label>
-            <select id="tipoEspecifico" class="form-select" required disabled>
-              <option selected disabled>Selecione o tipo...</option>
-            </select>
-          </div>
-
-          <!-- Médico -->
-          <div class="col-md-4">
-            <label for="medico" class="form-label">Médico Responsável</label>
-            <select id="medico" class="form-select" required disabled>
-              <option selected disabled>Selecione o médico...</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Data e hora -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="data" class="form-label">Data</label>
-            <input type="date" id="data" class="form-control" required>
-          </div>
-
-          <div class="col-md-6">
-            <label for="hora" class="form-label">Hora</label>
-            <input type="time" id="hora" class="form-control" required>
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-hospital mt-3">
-          <i class="bi bi-check2-circle me-2"></i>Confirmar Agendamento
-        </button>
-      </form>
-    </div>
-  </section>
-
-
   <!-- Seção: Resultados -->
   <section id="resultados" class="secao d-none">
     <div class="card p-4">
@@ -257,12 +195,10 @@
 </div>
 
 <script th:inline="javascript">
-
   function mostrarSecao(id) {
     document.querySelectorAll('.secao').forEach(secao => secao.classList.add('d-none'));
     document.getElementById(id).classList.remove('d-none');
 
-    // Atualiza itens do menu
     document.querySelectorAll('.sidebar a').forEach(link => {
       link.classList.remove('active');
       if (link.getAttribute("onclick")?.includes(id)) {
@@ -273,80 +209,15 @@
     sessionStorage.setItem('secaoAtiva', id);
   }
 
-
-
-
-  function abrirAgendar(event) {
-    event.preventDefault();
-    sessionStorage.setItem('secaoAtiva', 'agendar');
-    mostrarSecao('agendar');
-  }
-
-
-  // Restaurar a seção ativa ao recarregar a página
   document.addEventListener("DOMContentLoaded", () => {
     const secaoSalva = sessionStorage.getItem('secaoAtiva');
     if (secaoSalva && document.getElementById(secaoSalva)) {
       mostrarSecao(secaoSalva);
     } else {
-      mostrarSecao('dashboard'); // padrão
-    }
-  });
-
-  tipoAtendimento.addEventListener("change", () => {
-    const tipo = tipoAtendimento.value;
-    tipoEspecifico.innerHTML = '<option selected disabled>Selecione o tipo...</option>';
-    tipos[tipo].forEach(item => {
-      const opt = document.createElement("option");
-      opt.textContent = item;
-      tipoEspecifico.appendChild(opt);
-    });
-    tipoEspecifico.disabled = false;
-
-    medico.innerHTML = '<option selected disabled>Selecione o médico...</option>';
-    medicos[tipo].forEach(med => {
-      const opt = document.createElement("option");
-      opt.textContent = med;
-      medico.appendChild(opt);
-    });
-    medico.disabled = false;
-  });
-
-  const formAgendamento = document.getElementById("formAgendamento");
-  if (formAgendamento) {
-    formAgendamento.addEventListener("submit", (e) => {
-      e.preventDefault();
-      alert("✅ Agendamento realizado com sucesso!");
-      e.target.reset();
-      tipoEspecifico.disabled = true;
-      medico.disabled = true;
-    });
-  }
-
-  // --- Controle para abrir a aba 'Agendar' automaticamente ---
-  const mostrarAgendar = /*[[${mostrarAgendar} ?: false]]*/ false;
-
-  document.addEventListener("DOMContentLoaded", function() {
-    if (mostrarAgendar === true) {
-      mostrarSecao('agendar');
-    }
-  });
-  /*]]>*/
-
-
-
-  // Restaurar seção ativa ao carregar a página
-  document.addEventListener("DOMContentLoaded", function () {
-    const secaoSalva = sessionStorage.getItem("secaoAtiva");
-
-    if (secaoSalva) {
-      mostrarSecao(secaoSalva);
-    } else {
-      mostrarSecao("dashboard"); // padrão
+      mostrarSecao('dashboard');
     }
   });
 </script>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

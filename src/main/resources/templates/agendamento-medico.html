@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Agendamento - Selecionar Médico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .medico-card {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .medico-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 20px;
+        }
+        .medico-info h5 {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .medico-info p {
+            margin-bottom: 0;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Selecione o Médico e a Data</h2>
+                    <form th:action="@{'/agendar/' + ${pacienteId}}" method="post">
+                        <input type="hidden" name="tipoAtendimento" th:value="${tipo}" />
+                        <input type="hidden" name="tipoEspecifico" th:value="${tipoEspecifico}" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Médicos Disponíveis:</label>
+                            <div th:each="medico : ${medicos}" class="medico-card">
+                                <img th:src="@{'/imagem/medico/' + ${medico.id}}" alt="Foto do Médico">
+                                <div class="medico-info">
+                                    <h5 th:text="${medico.nome}"></h5>
+                                    <p th:text="${medico.especialidade}"></p>
+                                </div>
+                                <div class="ms-auto">
+                                    <input type="radio" name="medico" th:value="${medico.nome}" class="form-check-input" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="data" class="form-label fw-bold">Data</label>
+                                <input type="date" id="data" name="data" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="hora" class="form-label fw-bold">Hora</label>
+                                <input type="time" id="hora" name="hora" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Finalizar Agendamento</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

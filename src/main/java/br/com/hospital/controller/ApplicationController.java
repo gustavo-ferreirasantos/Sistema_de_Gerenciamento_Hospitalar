@@ -1,18 +1,17 @@
 package br.com.hospital.controller;
 
-
 import br.com.hospital.model.*;
 import br.com.hospital.repository.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
-
 import java.util.Optional;
 
 @Controller
@@ -34,8 +33,6 @@ public class ApplicationController {
     private MedicoRepository medicoRepository;
     @Autowired
     private AdminRepository adminRepository;
-
-
 
     private final Paciente pacienteService = new Paciente();
     private final Admin adminService = new Admin();
@@ -59,12 +56,12 @@ public class ApplicationController {
     public String autenticarLogin(
             @RequestParam("email") String email,
             @RequestParam("password") String password,
-            RedirectAttributes redirectAttributes) {
+            Model model) {
 
-        if(pacienteService.autenticar(email, password, pacienteRepository)) {
+        if (pacienteService.autenticar(email, password, pacienteRepository)) {
             Long id = pacienteRepository.findByEmailIgnoreCase(email).get().getId();
             return "redirect:/dashboard/" + id;
-        }else{
+        } else {
             return "redirect:/login?error";
         }
     }
@@ -74,14 +71,12 @@ public class ApplicationController {
             @RequestParam("email") String email,
             @RequestParam("password") String password) {
 
-        if(adminService.autenticar(email, password, adminRepository)) {
+        if (adminService.autenticar(email, password, adminRepository)) {
             return "redirect:/dashboardAdmin";
-        }else{
+        } else {
             return "redirect:/loginAdmin?error";
         }
     }
-
-
 
     @GetMapping("/registro")
     public ModelAndView registroForm() {
@@ -92,8 +87,7 @@ public class ApplicationController {
 
     @PostMapping("/registro")
     public String registro(Paciente paciente) {
-        // verifica a duplicidade de CPFs
-        if (!adminService.adicionarPaciente(pacienteRepository, paciente)){
+        if (!adminService.adicionarPaciente(pacienteRepository, paciente)) {
             return "redirect:/registro?error";
         }
         return "redirect:/login";
@@ -118,7 +112,6 @@ public class ApplicationController {
         medicoRepository.save(medico);
         return "redirect:/dashboardAdmin";
     }
-
 
     @GetMapping("/imagem/medico/{id}")
     public void mostrarFotoMedico(
@@ -147,14 +140,12 @@ public class ApplicationController {
         }
     }
 
-
     @GetMapping("/cadastroServico")
     public ModelAndView cadastroServicoForm() {
         ModelAndView mv = new ModelAndView("cadastroServicos");
         mv.addObject("informacao", new Informacoes());
         return mv;
     }
-
 
     @GetMapping("/cadastroServico/{id}")
     public ModelAndView editarServico(@PathVariable Long id) {
@@ -163,13 +154,11 @@ public class ApplicationController {
         return mv;
     }
 
-
     @PostMapping("/cadastroServico")
     public String cadastroServico(@ModelAttribute Informacoes info) {
         informacoesRepository.save(info);
         return "redirect:/dashboardAdmin";
     }
-
 
     @GetMapping("/dashboardAdmin")
     public ModelAndView list() {
@@ -177,6 +166,9 @@ public class ApplicationController {
         mv.addObject("pacientes", pacienteRepository.findAll());
         mv.addObject("medicos", medicoRepository.findAll());
         mv.addObject("informacoes", informacoesRepository.findAll());
+        mv.addObject("consultas", consultaRepository.findAll());
+        mv.addObject("exames", exameRepository.findAll());
+        mv.addObject("procedimentos", procedimentoRepository.findAll());
         return mv;
     }
 
@@ -214,13 +206,10 @@ public class ApplicationController {
         return "redirect:/dashboardAdmin";
     }
 
-
-    @GetMapping("/dashboard/{id}")
-    public ModelAndView dashboard(@PathVariable("id") Long id) {
+    @GetMapping("/dashboard/{pacienteId}")
+    public ModelAndView dashboard(@PathVariable("pacienteId") Long pacienteId) {
         ModelAndView mv = new ModelAndView("dashboard");
-        mv.addObject("pacienteId", id);
-        mv.addObject("tiposAtendimento", informacoesRepository.findDistinctTipos());
-        mv.addObject( "paciente", pacienteRepository.findById(id).get());
+        mv.addObject("paciente", pacienteRepository.findById(pacienteId).get());
         return mv;
     }
 
@@ -233,28 +222,22 @@ public class ApplicationController {
 
     @PostMapping("/salvarProcedimento")
     public String salvarProcedimento(@RequestParam("imagem") MultipartFile imagemFile) throws Exception {
-
         Procedimento p = new Procedimento();
-
         if (!imagemFile.isEmpty()) {
             p.setImagem(imagemFile.getBytes());
         }
-
         procedimentoRepository.save(p);
-
         return "redirect:/procedimentos";
     }
 
-   @GetMapping("procedimentos")
-   public ModelAndView listProcedimento() {
+    @GetMapping("procedimentos")
+    public ModelAndView listProcedimento() {
         return new ModelAndView("procedimentos");
-   }
-
+    }
 
     @GetMapping("/imagem/procedimento/{id}")
     public void mostrarImagem(@PathVariable long id, HttpServletResponse response) throws Exception {
         Procedimento p = procedimentoRepository.findById(id).orElse(null);
-
         if (p != null && p.getImagem() != null) {
             response.setContentType("image/jpeg");
             response.getOutputStream().write(p.getImagem());
@@ -262,106 +245,58 @@ public class ApplicationController {
         }
     }
 
-
-
-
-    @GetMapping("/agendar/{idPaciente}/tipo")
-    public ModelAndView selecionarTipoAtendimento(
-            @PathVariable("idPaciente") Long idPaciente,
-            @RequestParam("tipoAtendimento") String tipoAtendimento) {
-
-        ModelAndView mv = new ModelAndView("dashboard");
-
-        Optional<Paciente> pacienteOpt = pacienteRepository.findById(idPaciente);
-        if (pacienteOpt.isEmpty()) {
-            mv.setViewName("redirect:/login?erro=paciente_nao_encontrado");
-            return mv;
-        }
-        mv.addObject("mostrarAgendar", true);
-
-
-        mv.addObject("tipoSelecionado", tipoAtendimento);
-        // Carrega os médicos disponíveis para o tipo escolhido
-        mv.addObject("medicos", medicoRepository.findByEspecialidade(tipoAtendimento));
-
-
-
-        // Carrega as subcategorias ou tipos específicos (ex: tipo de exame)
-        mv.addObject("tiposEspecificos", informacoesRepository.findByEspecialidadeRelacionada(tipoAtendimento));
-
+    @GetMapping("/agendamento/{pacienteId}/tipo")
+    public ModelAndView agendamentoTipo(@PathVariable Long pacienteId) {
+        ModelAndView mv = new ModelAndView("agendamento-tipo");
+        mv.addObject("pacienteId", pacienteId);
         return mv;
     }
 
-
-
-
-    @GetMapping("/agendar/{idPaciente}/1")
-    public ModelAndView agendarEtapa1(
-            @PathVariable Long idPaciente,
-            @RequestParam(required = false) String tipoAtendimento
-    ) {
-        ModelAndView mv = new ModelAndView("agendar");
-
-        mv.addObject("pacienteId", idPaciente);
-        mv.addObject("tiposAtendimento", informacoesRepository.findDistinctTipos());
-        mv.addObject("tipoSelecionado", tipoAtendimento);
-
-        if (tipoAtendimento != null) {
-            mv.addObject("tiposEspecificos",
-                    informacoesRepository.findByEspecialidadeRelacionada(tipoAtendimento));
-        }
-
+    @GetMapping("/agendamento/{pacienteId}/especialidade")
+    public ModelAndView agendamentoEspecialidade(@PathVariable Long pacienteId, @RequestParam String tipo) {
+        ModelAndView mv = new ModelAndView("agendamento-especialidade");
+        mv.addObject("pacienteId", pacienteId);
+        mv.addObject("tipo", tipo);
+        Informacoes.TipoAgendamento tipoEnum = Informacoes.TipoAgendamento.valueOf(tipo);
+        mv.addObject("informacoes", informacoesRepository.findByTipoAgendamento(tipoEnum));
         return mv;
     }
 
-
-
-    @GetMapping("/agendar/{idPaciente}/2")
-    public ModelAndView agendarEtapa2(
-            @PathVariable Long idPaciente,
-            @RequestParam String tipoAtendimento,
-            @RequestParam(required = false) String tipoEspecifico
-    ) {
-        ModelAndView mv = new ModelAndView("agendar");
-
-        mv.addObject("pacienteId", idPaciente);
-        mv.addObject("tipoSelecionado", tipoAtendimento);
-        mv.addObject("tiposEspecificos",
-                informacoesRepository.findByEspecialidadeRelacionada(tipoAtendimento));
-
-        if (tipoEspecifico != null) {
-            mv.addObject("tipoEspecificoSelecionado", tipoEspecifico);
-            mv.addObject("medicos", medicoRepository.findByEspecialidade(tipoAtendimento));
-        }
-
+    @GetMapping("/agendamento/{pacienteId}/medico")
+    public ModelAndView agendamentoMedico(
+            @PathVariable Long pacienteId,
+            @RequestParam String tipo,
+            @RequestParam String tipoEspecifico,
+            @RequestParam Medico.Especialidade especialidade) {
+        ModelAndView mv = new ModelAndView("agendamento-medico");
+        mv.addObject("pacienteId", pacienteId);
+        mv.addObject("tipo", tipo);
+        mv.addObject("tipoEspecifico", tipoEspecifico);
+        mv.addObject("medicos", medicoRepository.findByEspecialidade(especialidade));
         return mv;
     }
 
-
-
-    @PostMapping("/agendar")
+    @PostMapping("/agendar/{pacienteId}")
     public String finalizarAgendamento(
-            @RequestParam Long pacienteId,
+            @PathVariable Long pacienteId,
             @RequestParam String tipoAtendimento,
             @RequestParam String tipoEspecifico,
             @RequestParam String medico,
             @RequestParam String data,
             @RequestParam String hora,
-            RedirectAttributes redirect
-    ) {
+            RedirectAttributes redirect) {
         try {
             Paciente p = pacienteRepository.findById(pacienteId).orElseThrow();
             Medico m = medicoRepository.findByNome(medico).orElseThrow();
             Informacoes info = informacoesRepository.findByNome(tipoEspecifico).orElseThrow();
-
             Timestamp ts = Timestamp.valueOf(data + " " + hora + ":00");
 
-            boolean sucesso = switch (tipoAtendimento) {
+            switch (tipoAtendimento) {
                 case "Exame" -> pacienteService.agendar(p, m, ts, info, exameRepository);
                 case "Procedimento" -> pacienteService.agendar(p, m, ts, info, procedimentoRepository);
                 case "Consulta" -> pacienteService.agendar(p, m, ts, info, consultaRepository);
                 default -> throw new RuntimeException("Tipo inválido");
-            };
+            }
 
             return "redirect:/dashboard/" + pacienteId;
 
@@ -370,7 +305,4 @@ public class ApplicationController {
             return "redirect:/dashboard/" + pacienteId;
         }
     }
-
-
-
 }
