@@ -17,7 +17,7 @@ public class Informacoes {
     private int id;
     private String nome;
     private String descricao;
-    private int tempoNecessario;
+    private float tempoNecessario;
 
     @Enumerated(EnumType.STRING)
     private TipoAgendamento tipoAgendamento;

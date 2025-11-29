@@ -80,6 +80,7 @@ public class Paciente extends User {
         return (digits.charAt(9) - '0') == d1 && (digits.charAt(10) - '0') == d2;
     }
 
+    // Formata o Cpf no formato: 000.000.000-00
     public static String formatCpf(String cpf) {
         // Mantém apenas dígitos
         String digits = cpf.replaceAll("\\D", "");
@@ -92,6 +93,7 @@ public class Paciente extends User {
     }
 
 
+    // Autentica o login do paciente, usando o email e senha
     @Override
     public boolean autenticar(String email, String senha, JpaRepository<? extends User, Long> repository) {
         if (repository instanceof PacienteRepository pacienteRepository) {
@@ -120,7 +122,7 @@ public class Paciente extends User {
         }
 
         medico.setHorasTrabalhadas(
-                medico.getHorasTrabalhadas() + informacoes.getTempoNecessario()
+                medico.getHorasTrabalhadas() + informacoes.getTempoNecessario()/60
         );
 
         T novoAgendamento = switch (informacoes.getTipoAgendamento()) {

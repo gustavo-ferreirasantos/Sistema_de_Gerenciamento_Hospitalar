@@ -31,17 +31,6 @@ public abstract class User implements Autenticavel {
         setPassword(password);
     }
 
-
-    /* Equivale a isso
-    CREATE TABLE user (
-            id INT PRIMARY KEY,
-            email VARCHAR(255),
-    password VARCHAR(255)
-     */
-
-
-
-
     // Setter personalizado para o e-mail
     public void setEmail(String email) {
         if (email == null || !email.contains("@")) {

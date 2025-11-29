@@ -27,12 +27,12 @@ public class Medico extends User{
     private String cpf;
     @Enumerated(EnumType.STRING)
     private Especialidade especialidade;
-    private int cargaHoraria;
+    private float cargaHoraria;
     @Embedded
     Endereco endereco;
     @Lob
     private byte[] foto;
-    private int horasTrabalhadas = 0;
+    private float horasTrabalhadas = 0;
 
 
     public enum Especialidade{
@@ -48,7 +48,7 @@ public class Medico extends User{
 
     public boolean disponivel(Medico medico, Informacoes informacoes){
         if(!(medico.getCargaHoraria() == medico.getHorasTrabalhadas())){
-            if((medico.getHorasTrabalhadas() + informacoes.getTempoNecessario()) <= medico.getCargaHoraria()){
+            if((medico.getHorasTrabalhadas() + informacoes.getTempoNecessario()/60) <= medico.getCargaHoraria()){
                 return true;
             }
         }
