@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.sql.Timestamp;
 
@@ -20,8 +21,23 @@ public class Procedimento extends Agendamento {
 
     @Lob
     private byte[] imagem;
+    private String descricao;
 
     public Procedimento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
         super(data, paciente, medico, status);
+    }
+
+
+    @Override
+    public String getTipo() {
+        return "Procedimento";
+    }
+
+    @Override
+    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {
+        if(!agendamento.getTipo().equals("Procedimento")){
+            return;
+        }
+
     }
 }

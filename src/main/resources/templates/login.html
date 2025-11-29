@@ -5,14 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" th:href="@{/style.css}">
 
-
     <title>Login</title>
+
+    <style>
+        .option-btn {
+            border-radius: 20px;
+            padding: 10px 25px;
+            font-weight: bold;
+        }
+        .option-btn.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 
@@ -21,47 +30,102 @@
         <div class="row d-flex justify-content-center align-items-center h-100">
 
             <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="/img/login.jpg"
-                     class="img-fluid" alt="Sample image">
+                <img src="/img/login.jpg" class="img-fluid" alt="Sample image">
             </div>
 
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
 
-                <!--  FORMULÁRIO DE LOGIN -->
-                <form method="POST" th:action="@{'/login'}" >
+                <!-- BOTÕES PARA TROCAR ENTRE PACIENTE E MÉDICO -->
+                <div class="d-flex justify-content-center mb-4">
+                    <button id="btnPaciente" class="btn btn-outline-primary option-btn active" onclick="alternar('paciente')">
+                        Paciente
+                    </button>
+                    <button id="btnMedico" class="btn btn-outline-primary option-btn ms-2" onclick="alternar('medico')">
+                        Médico
+                    </button>
+                </div>
 
-                    <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+                <!-- FORMULÁRIO -->
+                <form id="loginForm" method="POST" th:action="@{'/login'}">
+
+                    <p class="lead fw-normal mb-0 me-3 text-center">Sign in</p>
                     <br>
 
-                    <!-- Email input -->
+                    <!-- Email -->
                     <div class="form-outline mb-4">
-                        <input type="email" id="form3Example3" class="form-control form-control-lg" placeholder="Enter a valid email address" name="email" required>
-                        <label class="form-label" for="form3Example3">Email address</label>
+                        <input type="email" class="form-control form-control-lg"
+                               placeholder="Enter a valid email address" name="email" required>
+                        <label class="form-label">Email address</label>
                     </div>
 
-                    <!-- Password input -->
+                    <!-- Senha -->
                     <div class="form-outline mb-3">
-                        <input type="password" id="password" class="form-control form-control-lg"  placeholder="Enter password" name="password" required>
-                        <label class="form-label" for="password" >Password</label>
+                        <input type="password" class="form-control form-control-lg"
+                               placeholder="Enter password" name="password" required>
+                        <label class="form-label">Password</label>
+                    </div>
+
+                    <!-- Campo extra: CRM (só aparece para médico) -->
+                    <div id="crmField" class="form-outline mb-3 d-none">
+                        <input type="text" class="form-control form-control-lg"
+                               placeholder="Digite o CRM" name="crm">
+                        <label class="form-label">CRM</label>
                     </div>
 
                     <div th:if="${param.error}">
-                        <p class="text-danger">E-mail ou senha inválidos!</p>
+                        <p class="text-danger">E-mail, senha ou CRM inválidos!</p>
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">
-                        <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-                        <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/registro" class="link-danger">Register</a></p>
+
+                        <button type="submit"
+                                class="btn btn-primary btn-lg"
+                                style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                            Login
+                        </button>
+
+                        <!-- TEXTO QUE SOMA NO LOGIN MÉDICO -->
+                        <div id="registroLink">
+                            <p class="small fw-bold mt-2 pt-1 mb-0">
+                                Don't have an account? <a href="/registro" class="link-danger">Register</a>
+                            </p>
+                        </div>
+
                     </div>
 
                 </form>
-
 
             </div>
         </div>
     </div>
 </section>
 
+<script>
+    function alternar(tipo) {
+        const form = document.getElementById('loginForm');
+        const crmField = document.getElementById('crmField');
+        const btnPaciente = document.getElementById('btnPaciente');
+        const btnMedico = document.getElementById('btnMedico');
+        const registroLink = document.getElementById('registroLink');
+
+        if (tipo === 'paciente') {
+            form.action = "/login";
+            crmField.classList.add("d-none");
+            registroLink.classList.remove("d-none");
+
+            btnPaciente.classList.add("active");
+            btnMedico.classList.remove("active");
+
+        } else {
+            form.action = "/loginMedico";
+            crmField.classList.remove("d-none");
+            registroLink.classList.add("d-none");
+
+            btnMedico.classList.add("active");
+            btnPaciente.classList.remove("active");
+        }
+    }
+</script>
 
 </body>
 </html>

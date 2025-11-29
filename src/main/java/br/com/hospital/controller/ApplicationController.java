@@ -35,6 +35,7 @@ public class ApplicationController {
     private AdminRepository adminRepository;
 
     private final Paciente pacienteService = new Paciente();
+    private final Medico medicoService = new Medico();
     private final Admin adminService = new Admin();
 
     @GetMapping("/")
@@ -66,8 +67,23 @@ public class ApplicationController {
         }
     }
 
+    @PostMapping("/loginMedico")
+    public String autenticarLoginMedico(
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("crm") String crm,
+            Model model) {
+
+        if (medicoService.autenticar(email, password, crm, medicoRepository)) {
+            Long id = medicoRepository.findByEmailIgnoreCase(email).get().getId();
+            return "redirect:/painel/" + id;
+        } else {
+            return "redirect:/login?error";
+        }
+    }
+
     @PostMapping("/loginAdmin")
-    public String loginAdmin(
+    public String autenticarLoginAdmin(
             @RequestParam("email") String email,
             @RequestParam("password") String password) {
 
@@ -111,6 +127,14 @@ public class ApplicationController {
         }
         medicoRepository.save(medico);
         return "redirect:/dashboardAdmin";
+    }
+
+
+    @GetMapping("/painel/{id}")
+    public ModelAndView painel(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("painelMedico");
+        mv.addObject("medico", medicoRepository.findById(id).get());
+        return mv;
     }
 
     @GetMapping("/imagem/medico/{id}")

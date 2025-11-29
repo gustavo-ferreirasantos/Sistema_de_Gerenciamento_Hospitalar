@@ -1,5 +1,6 @@
 package br.com.hospital.model;
 
+import br.com.hospital.interfaces.Agendavel;
 import br.com.hospital.model.Medico;
 import br.com.hospital.model.Paciente;
 import jakarta.persistence.*;
@@ -7,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.sql.Timestamp;
 
@@ -15,7 +17,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public abstract class Agendamento {
+public abstract class Agendamento implements Agendavel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -35,6 +37,10 @@ public abstract class Agendamento {
         AGENDADO, CANCELADO, CONCLUIDO
     }
 
+    public abstract <T extends Agendamento>  void resultado(T agendamento, JpaRepository<T, Long> repository);
+
+
+    public abstract String getTipo();
 
     // Construtor com todos os dados
     public Agendamento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {

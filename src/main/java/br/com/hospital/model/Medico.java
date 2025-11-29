@@ -56,11 +56,15 @@ public class Medico extends User{
     }
 
 
+
+
     @Override
-    public boolean autenticar(String email, String senha, JpaRepository<? extends User, Long> repository) {
+    public boolean autenticar(String email, String senha, String crm, JpaRepository<? extends User, Long> repository) {
         if (repository instanceof MedicoRepository medicoRepository) {
             Optional<Medico> p = medicoRepository.findByEmailIgnoreCase(email);
-            return p.isPresent() && p.get().getPassword().equals(senha);
+            return p.isPresent()
+                    && p.get().getPassword().equals(senha)
+                    && p.get().getCrm().equals(crm);
         }
         return false;
     }
@@ -90,9 +94,26 @@ public class Medico extends User{
         return false;
     }
 
-    public String Resultados(AgendamentoRepository agendamentoRepository){
-        return null;
+    public void cancelarAtendimento(Agendamento agendamento, AgendamentoRepository agendamentoRepository) {
+        // verifica, primeiro, se o agendamento existe
+        if (agendamento == null){
+            return;
+        }
+
+        // verifica se o médico do agendamento é o mesmo da classe
+        if (!Objects.equals(agendamento.getMedico().getId(), this.getId())){
+            return;
+        }
+
+        // se o status do agendamento for "AGENDADO" e o médico for o mesmo, ele é cancelado
+        if (agendamento.getStatus() == StatusAgendamento.AGENDADO){
+            agendamento.setStatus(StatusAgendamento.CANCELADO);
+            agendamentoRepository.save(agendamento);
+        }
     }
+
+
+
 
 
 
