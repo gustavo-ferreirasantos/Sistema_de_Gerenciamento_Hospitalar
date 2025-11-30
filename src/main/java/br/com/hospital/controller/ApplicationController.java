@@ -134,6 +134,15 @@ public class ApplicationController {
     public ModelAndView painel(@PathVariable Long id) {
         ModelAndView mv = new ModelAndView("painelMedico");
         mv.addObject("medico", medicoRepository.findById(id).get());
+        mv.addObject("CONSULTA_CANCELADO", medicoService.status(medicoRepository.findById(id).get(), "CONSULTA_CANCELADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("CONSULTA_AGENDADO", medicoService.status(medicoRepository.findById(id).get(), "CONSULTA_AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("CONSULTA_CONCLUIDO", medicoService.status(medicoRepository.findById(id).get(), "CONSULTA_CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("EXAME_CANCELADO", medicoService.status(medicoRepository.findById(id).get(), "EXAME_CANCELADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("EXAME_AGENDADO", medicoService.status(medicoRepository.findById(id).get(), "EXAME_AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("EXAME_CONCLUIDO", medicoService.status(medicoRepository.findById(id).get(), "EXAME_CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("PROCEDIMENTO_CANCELADO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_CANCELADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("PROCEDIMENTO_AGENDADO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("PROCEDIMENTO_CONCLUIDO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
         return mv;
     }
 
@@ -239,12 +248,7 @@ public class ApplicationController {
         return mv;
     }
 
-    @GetMapping("/painelMedico")
-    public ModelAndView painel() {
-        ModelAndView mv = new ModelAndView("painelMedico");
-        mv.addObject("paciente", pacienteRepository.findAll());
-        return mv;
-    }
+
 
     @PostMapping("/salvarProcedimento")
     public String salvarProcedimento(@RequestParam("imagem") MultipartFile imagemFile) throws Exception {

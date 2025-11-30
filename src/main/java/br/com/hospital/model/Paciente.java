@@ -1,6 +1,7 @@
 package br.com.hospital.model;
 
 
+import br.com.hospital.interfaces.StatusInformavel;
 import br.com.hospital.repository.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Paciente extends User {
+public class Paciente extends User implements StatusInformavel {
 
     @Embedded
     private Endereco endereco;

@@ -1,10 +1,11 @@
 package br.com.hospital.model;
 
 // comparação das IDs dos médicos
+import java.util.List;
 import java.util.Objects;
-import br.com.hospital.repository.AgendamentoRepository;
-import br.com.hospital.repository.MedicoRepository;
-import br.com.hospital.repository.PacienteRepository;
+
+import br.com.hospital.interfaces.StatusInformavel;
+import br.com.hospital.repository.*;
 import br.com.hospital.model.Agendamento;
 import br.com.hospital.model.Agendamento.StatusAgendamento;
 import jakarta.persistence.*;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Medico extends User{
+public class Medico extends User implements StatusInformavel {
 
     private String crm;
     private String cpf;
@@ -111,6 +112,69 @@ public class Medico extends User{
             agendamentoRepository.save(agendamento);
         }
     }
+
+
+
+    public <T extends User> int status(
+            T user,
+            String opcao,
+            ExameRepository exameRepository,
+            ConsultaRepository consultaRepository,
+            ProcedimentoRepository procedimentoRepository) {
+
+        int contagem = 0;
+
+        if (user.toString().equals("Medico")) {
+
+            // Quebra EXAME_CONCLUIDO
+            String tipo = opcao.split("_")[0];   // EXAME
+            String status = opcao.split("_")[1]; // CONCLUIDO
+
+            List<Exame> examesList = exameRepository.findAll();
+            List<Consulta> consultasList = consultaRepository.findAll();
+            List<Procedimento> procedimentosList = procedimentoRepository.findAll();
+
+            // ----- EXAMES -----
+            if (tipo.equals("EXAME")) {
+                for (Exame exame : examesList) {
+                    if (exame.getMedico() != null &&
+                            exame.getMedico().getId().equals(user.getId()) &&
+                            exame.getStatus().toString().equals(status)) {
+
+                        contagem++;
+                    }
+                }
+            }
+
+            // ----- CONSULTAS -----
+            if (tipo.equals("CONSULTA")) {
+                for (Consulta consulta : consultasList) {
+                    if (consulta.getMedico() != null &&
+                            consulta.getMedico().getId().equals(user.getId()) &&
+                            consulta.getStatus().toString().equals(status)) {
+
+                        contagem++;
+                    }
+                }
+            }
+
+            // ----- PROCEDIMENTOS -----
+            if (tipo.equals("PROCEDIMENTO")) {
+                for (Procedimento procedimento : procedimentosList) {
+                    if (procedimento.getMedico() != null &&
+                            procedimento.getMedico().getId().equals(user.getId()) &&
+                            procedimento.getStatus().toString().equals(status)) {
+
+                        contagem++;
+                    }
+                }
+            }
+        }
+
+        return contagem;
+    }
+
+
 
 
     @Override

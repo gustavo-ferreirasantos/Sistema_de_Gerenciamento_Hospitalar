@@ -118,27 +118,94 @@
         <div class="row text-center mb-4">
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-people-fill text-primary card-icon"></i>
-                    <h5>Pacientes Hoje</h5>
-                    <p class="fs-4 fw-bold">8</p>
+                    <i class="bi bi-person-check card-icon"></i>
+                    <h5>Consultas Canceladas</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${CONSULTA_CANCELADO}"></span>
+                    </p>
                 </div>
             </div>
-
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-clipboard2-check text-success card-icon"></i>
+                    <i class="bi bi-person-check card-icon"></i>
                     <h5>Consultas Concluídas</h5>
-                    <p class="fs-4 fw-bold">24</p>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${CONSULTA_AGENDADO}"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4">
+                    <i class="bi bi-person-check card-icon"></i>
+                    <h5>Consultas Pendentes</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${CONSULTA_CONCLUIDO}"></span>
+                    </p>
                 </div>
             </div>
 
+
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-file-earmark-medical text-warning card-icon"></i>
-                    <h5>Exames Pendentes</h5>
-                    <p class="fs-4 fw-bold text-warning">5</p>
+                    <i class="bi bi-clipboard2-pulse card-icon"></i>
+                    <h5>Exames Canceladas</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${EXAME_CANCELADO}"></span>
+                    </p>
                 </div>
             </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4">
+                    <i class="bi bi-clipboard2-pulse card-icon"></i>
+                    <h5>Exames Concluídas</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${EXAME_CONCLUIDO}"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4">
+                    <i class="bi bi-clipboard2-pulse card-icon"></i>
+                    <h5>Exames Pendentes</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${EXAME_AGENDADO}"></span>
+                    </p>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="col-md-4 mb-3">
+                <div class="card p-4">
+                    <i class="bi bi-heart-pulse card-icon"></i>
+                    <h5>Procedimentos Canceladas</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${PROCEDIMENTO_CANCELADO}"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4">
+                    <i class="bi bi-heart-pulse card-icon"></i>
+                    <h5>Procedimentos Concluídas</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${PROCEDIMENTO_CONCLUIDO}"></span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card p-4">
+                    <i class="bi bi-heart-pulse card-icon"></i>
+                    <h5>Procedimentos Pendentes</h5>
+                    <p class="fs-4 fw-bold">
+                        <span th:text="${PROCEDIMENTO_AGENDADO}"></span>
+                    </p>
+                </div>
+            </div>
+
         </div>
 
     </section>
