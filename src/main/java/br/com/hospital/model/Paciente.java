@@ -108,8 +108,8 @@ public class Paciente extends User {
         return p.isPresent() ? p.get() : null;
     }
 
-    public int status(
-            Paciente paciente,
+    public <T extends User> int status(
+            T user,
             String opcao,
             ExameRepository exameRepository,
             ConsultaRepository consultaRepository,
@@ -117,40 +117,43 @@ public class Paciente extends User {
 
         int contagem = 0;
 
+        if(user.toString().equals("Paciente")){
 
-        // Listas carregadas dos repositórios
-        List<Exame> examesList = exameRepository.findAll();
-        List<Consulta> consultasList = consultaRepository.findAll();
-        List<Procedimento> procedimentosList = procedimentoRepository.findAll();
+            // Listas carregadas dos repositórios
+            List<Exame> examesList = exameRepository.findAll();
+            List<Consulta> consultasList = consultaRepository.findAll();
+            List<Procedimento> procedimentosList = procedimentoRepository.findAll();
 
-        // ----- EXAMES -----
-        for (Exame exame : examesList) {
-            if (exame.getPaciente() != null &&
-                    exame.getPaciente().getId().equals(paciente.getId()) &&
-                    exame.getStatus().toString().equals(opcao)) {
-                contagem++;
+            // ----- EXAMES -----
+            for (Exame exame : examesList) {
+                if (exame.getPaciente() != null &&
+                        exame.getPaciente().getId().equals(user.getId()) &&
+                        exame.getStatus().toString().equals(opcao)) {
+                    contagem++;
+                }
+            }
+
+            // ----- CONSULTAS -----
+            for (Consulta consulta : consultasList) {
+                if (consulta.getPaciente() != null &&
+                        consulta.getPaciente().getId().equals(user.getId()) &&
+                        consulta.getStatus().toString().equals(opcao)) {
+
+                    contagem++;
+                }
+            }
+
+            // ----- PROCEDIMENTOS -----
+            for (Procedimento procedimento : procedimentosList) {
+                if (procedimento.getPaciente() != null &&
+                        procedimento.getPaciente().getId().equals(user.getId()) &&
+                        procedimento.getStatus().toString().equals(opcao)) {
+
+                    contagem++;
+                }
             }
         }
 
-        // ----- CONSULTAS -----
-        for (Consulta consulta : consultasList) {
-            if (consulta.getPaciente() != null &&
-                    consulta.getPaciente().getId().equals(paciente.getId()) &&
-                    consulta.getStatus().toString().equals(opcao)) {
-
-                contagem++;
-            }
-        }
-
-        // ----- PROCEDIMENTOS -----
-        for (Procedimento procedimento : procedimentosList) {
-            if (procedimento.getPaciente() != null &&
-                    procedimento.getPaciente().getId().equals(paciente.getId()) &&
-                    procedimento.getStatus().toString().equals(opcao)) {
-
-                contagem++;
-            }
-        }
 
         return contagem;
     }
@@ -185,13 +188,8 @@ public class Paciente extends User {
     }
 
 
-
-
-
-
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "Paciente";
+    }
 }

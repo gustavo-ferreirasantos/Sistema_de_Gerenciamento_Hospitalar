@@ -113,8 +113,8 @@ public class Medico extends User{
     }
 
 
-
-
-
-
+    @Override
+    public String toString() {
+        return "Medico";
+    }
 }

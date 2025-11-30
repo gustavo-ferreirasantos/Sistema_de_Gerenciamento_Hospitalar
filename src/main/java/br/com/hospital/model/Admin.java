@@ -53,6 +53,12 @@ public class Admin extends User {
         adminRepository.findById(1L).get().setPassword(senha);
     }
 
+
+    @Override
+    public String toString() {
+        return "Admin";
+    }
+
 }
 
 
