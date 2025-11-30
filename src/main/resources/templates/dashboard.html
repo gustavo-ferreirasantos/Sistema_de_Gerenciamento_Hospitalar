@@ -100,40 +100,36 @@
 
   <!-- Topbar -->
   <div class="topbar mb-4">
-    <h3 class="m-0">Painel do Paciente - <span th:text="${paciente.nome}">Gustavo</span></h3>
+    <h3 class="m-0">Painel do Paciente - <span th:text="${paciente.nome}"></span></h3>
     <div><i class="bi bi-person-circle fs-3"></i></div>
   </div>
 
   <!-- Seção: Dashboard -->
   <section id="dashboard" class="secao">
     <div class="text-center mb-5">
-      <h4>Bem-vindo(a), <span th:text="${paciente.nome}">Gustavo</span> 👋</h4>
+      <h4>Bem-vindo(a), <span th:text="${paciente.nome}"></span> 👋</h4>
       <p class="text-muted">Aqui você acompanha o status dos seus exames e atividades recentes.</p>
     </div>
 
     <!-- Cards -->
     <div class="row text-center mb-5">
-      <div class="col-md-4 mb-3">
-        <div class="card p-4">
-          <i class="bi bi-calendar-event text-primary card-icon"></i>
-          <h5>Próximo Exame</h5>
-          <p class="text-muted">Nenhum exame agendado</p>
-        </div>
-      </div>
-      <div class="col-md-4 mb-3">
+
+      <div class="col-md-6 mb-3">
         <div class="card p-4">
           <i class="bi bi-clipboard2-check text-success card-icon"></i>
           <h5>Serviços Realizados</h5>
-          <p class="fs-4 fw-bold text-success">12</p>
+          <p class="fs-4 fw-bold text-success"><span th:text="${CONCLUIDO}">Gustavo</span></p>
         </div>
       </div>
-      <div class="col-md-4 mb-3">
+
+      <div class="col-md-6 mb-3">
         <div class="card p-4">
           <i class="bi bi-hourglass-split text-warning card-icon"></i>
           <h5>Resultados Pendentes</h5>
-          <p class="fs-4 fw-bold text-warning">2</p>
+          <p class="fs-4 fw-bold text-warning"><span th:text="${AGENDADO}">Gustavo</span></p>
         </div>
       </div>
+
     </div>
 
   </section>

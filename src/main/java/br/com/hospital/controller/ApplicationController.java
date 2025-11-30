@@ -234,6 +234,8 @@ public class ApplicationController {
     public ModelAndView dashboard(@PathVariable("pacienteId") Long pacienteId) {
         ModelAndView mv = new ModelAndView("dashboard");
         mv.addObject("paciente", pacienteRepository.findById(pacienteId).get());
+        mv.addObject("AGENDADO", pacienteService.status(pacienteRepository.findById(pacienteId).get(), "AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("CONCLUIDO", pacienteService.status(pacienteRepository.findById(pacienteId).get(), "CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
         return mv;
     }
 
