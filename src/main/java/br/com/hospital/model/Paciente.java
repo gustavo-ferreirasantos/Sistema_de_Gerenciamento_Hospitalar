@@ -1,8 +1,7 @@
 package br.com.hospital.model;
 
 
-import br.com.hospital.repository.AgendamentoRepository;
-import br.com.hospital.repository.PacienteRepository;
+import br.com.hospital.repository.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Getter
@@ -106,6 +106,53 @@ public class Paciente extends User {
     public Paciente buscarPaciente(PacienteRepository repository, Long id) {
         Optional<Paciente> p = repository.findById(id);
         return p.isPresent() ? p.get() : null;
+    }
+
+    public int status(
+            Paciente paciente,
+            String opcao,
+            ExameRepository exameRepository,
+            ConsultaRepository consultaRepository,
+            ProcedimentoRepository procedimentoRepository) {
+
+        int contagem = 0;
+
+
+        // Listas carregadas dos repositórios
+        List<Exame> examesList = exameRepository.findAll();
+        List<Consulta> consultasList = consultaRepository.findAll();
+        List<Procedimento> procedimentosList = procedimentoRepository.findAll();
+
+        // ----- EXAMES -----
+        for (Exame exame : examesList) {
+            if (exame.getPaciente() != null &&
+                    exame.getPaciente().getId().equals(paciente.getId()) &&
+                    exame.getStatus().toString().equals(opcao)) {
+                contagem++;
+            }
+        }
+
+        // ----- CONSULTAS -----
+        for (Consulta consulta : consultasList) {
+            if (consulta.getPaciente() != null &&
+                    consulta.getPaciente().getId().equals(paciente.getId()) &&
+                    consulta.getStatus().toString().equals(opcao)) {
+
+                contagem++;
+            }
+        }
+
+        // ----- PROCEDIMENTOS -----
+        for (Procedimento procedimento : procedimentosList) {
+            if (procedimento.getPaciente() != null &&
+                    procedimento.getPaciente().getId().equals(paciente.getId()) &&
+                    procedimento.getStatus().toString().equals(opcao)) {
+
+                contagem++;
+            }
+        }
+
+        return contagem;
     }
 
 
