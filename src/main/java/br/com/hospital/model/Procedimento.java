@@ -21,6 +21,7 @@ public class Procedimento extends Agendamento {
 
     @Lob
     private byte[] imagem;
+    private String remedios;
     private String descricao;
 
     public Procedimento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
