@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -360,5 +361,58 @@ public class ApplicationController {
     }
 
 
+
+    @GetMapping("/atendimento/consulta/{id}")
+    public ModelAndView atendimentoConsulta(@PathVariable Long id){
+        ModelAndView mv = new ModelAndView("atendimentoConsulta");
+        mv.addObject("agendamento", consultaRepository.findById(id).get());
+        return mv;
+    }
+
+    @GetMapping("/atendimento/exame/{id}")
+    public ModelAndView atendimentoExame(@PathVariable Long id){
+        ModelAndView mv = new ModelAndView("atendimentoExame");
+        mv.addObject("agendamento", exameRepository.findById(id).get());
+        return mv;
+
+    }
+
+    @GetMapping("/atendimento/procedimento/{id}")
+    public ModelAndView atendimentoProcedimento(@PathVariable Long id) {
+        ModelAndView mv = new ModelAndView("atendimentoProcedimento");
+        mv.addObject("agendamento", procedimentoRepository.findById(id).get());
+        return mv;
+    }
+
+
+    @PostMapping("salvar/consulta/{id}")
+    public String salvarConsulta(@PathVariable Long id, @RequestParam String diagnostico, @RequestParam(required = false) Boolean retornoNecessario) {
+        Consulta c = consultaRepository.findById(id).get();
+        c.setDiagnostico(diagnostico);
+        c.setRetornoNecessario(retornoNecessario);
+        consultaRepository.save(c);
+        return "redirect:/painel/" + c.getMedico().getId();
+    }
+
+    @PostMapping("salvar/exame/{id}")
+    public String salvarExame(@PathVariable Long id, @RequestParam("resultado") MultipartFile resultado) throws IOException {
+        Exame e = exameRepository.findById(id).get();
+        byte[] arquivoBytes = resultado.getBytes();
+        e.setLaudo(arquivoBytes);
+        exameRepository.save(e);
+        return "redirect:/painel/" + e.getMedico().getId();
+    }
+
+
+
+    @PostMapping("/salvar/procedimento/{id}")
+    public String salvarProcediment(@PathVariable Long id, @RequestParam String remedios, @RequestParam String diagnostico, @RequestParam String riscos_observacoes) {
+        Procedimento p = procedimentoRepository.findById(id).get();
+        p.setDiagnostico(diagnostico);
+        p.setRemedios(remedios);
+        p.setRiscos_observacoes(riscos_observacoes);
+        procedimentoRepository.save(p);
+        return "redirect:/painel/" + p.getMedico().getId();
+    }
 
 }

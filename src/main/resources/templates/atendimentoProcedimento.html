@@ -11,9 +11,10 @@
 
     <div th:if="${agendamento}">
         <p><strong>Paciente:</strong> <span th:text="${agendamento.paciente.nome}"></span></p>
-        <p><strong>Data:</strong> <span th:text="${#dates.format(agendamento.data, 'dd/MM/yyyy HH:mm')}"></span></p>
+        <p><strong>Data:</strong> <span th:text="${#temporals.format(agendamento.data, 'dd/MM/yyyy HH:mm')}
+"></span></p>
 
-        <form th:action="@{/salvar-atendimento/procedimento}" method="post">
+        <form th:action="@{/salvar/procedimento/{id}(id=${agendamento.id})}" method="post">
             <input type="hidden" name="agendamentoId" th:value="${agendamento.id}">
 
             <!-- Diagnóstico -->
@@ -34,7 +35,7 @@
             <div class="mb-3">
                 <label for="riscos" class="form-label">Riscos e Observações</label>
                 <textarea class="form-control" id="riscos"
-                          name="riscos" rows="3"></textarea>
+                          name="riscos_observacoes" rows="3"></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">Salvar Procedimento</button>

@@ -11,9 +11,10 @@
 
     <div th:if="${agendamento}">
         <p><strong>Paciente:</strong> <span th:text="${agendamento.paciente.nome}"></span></p>
-        <p><strong>Data:</strong> <span th:text="${#dates.format(agendamento.data, 'dd/MM/yyyy HH:mm')}"></span></p>
+        <p><strong>Data:</strong> <span th:text="${#temporals.format(agendamento.data, 'dd/MM/yyyy HH:mm')}
+"></span></p>
 
-        <form th:action="@{/salvar-atendimento/exame}"
+        <form th:action="@{/salvar/exame/{id}(id=${agendamento.id})}"
               method="post"
               enctype="multipart/form-data">
 

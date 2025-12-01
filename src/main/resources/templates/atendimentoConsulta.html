@@ -11,9 +11,10 @@
 
     <div th:if="${agendamento}">
         <p><strong>Paciente:</strong> <span th:text="${agendamento.paciente.nome}"></span></p>
-        <p><strong>Data:</strong> <span th:text="${#dates.format(agendamento.data, 'dd/MM/yyyy HH:mm')}"></span></p>
+        <p><strong>Data:</strong> <span th:text="${#temporals.format(agendamento.data, 'dd/MM/yyyy HH:mm')}
+"></span></p>
 
-        <form th:action="@{/salvar-atendimento/consulta}" method="post">
+        <form th:action="@{/salvar/consulta/{id}(id=${agendamento.id})}" method="post">
 
             <input type="hidden" name="agendamentoId" th:value="${agendamento.id}">
 
@@ -24,13 +25,12 @@
             </div>
 
 
-            <div class="mb-3 form-check">
-                <input class="form-check-input" type="checkbox" id="retornoNecessario"
-                       name="retornoNecessario"
-                       th:checked="${agendamento.retornoNecessario}">
-                <label class="form-check-label" for="retornoNecessario">
-                    Retorno necessário?
-                </label>
+            <div class="mb-3 col-md-2 form-check">
+                <label>Retorno necessário?</label>
+                <select name="retornoNecessario" class="form-select" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
             </div>
 
             <button type="submit" class="btn btn-primary">Salvar Atendimento</button>
