@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface ProcedimentoRepository extends JpaRepository<Procedimento, Long> {
     List<Procedimento> findByMedicoId(Long id);
+    List<Procedimento> findByPacienteId(Long id);
 }

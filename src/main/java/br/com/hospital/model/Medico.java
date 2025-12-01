@@ -71,28 +71,15 @@ public class Medico extends User implements StatusInformavel {
     }
 
     // para o agendamento, não são necessários os repositórios de médico e paciente
-    public boolean realizarAtendimento(Agendamento agendamento, AgendamentoRepository agendamentoRepository) {
-        // verifica, primeiro, se o agendamento existe para que o atendimento seja realizado
-        if (agendamento == null){
-            return false;
-        }
-
-        // verifica se o médico do agendamento é o mesmo da classe
-        if (!Objects.equals(agendamento.getMedico().getId(), this.getId())){
-            return false;
-        }
+    public <T extends Agendamento> void realizarAtendimento(T agendamento,  JpaRepository<T, Long> repository) {
 
         // se o status do agendamento for "AGENDADO" e o médico for o mesmo, ele é concluído e salvo no repositório
         if (agendamento.getStatus() == StatusAgendamento.AGENDADO){
             // define o atendimento como CONCLUÍDO e salva no repositório
             agendamento.setStatus(StatusAgendamento.CONCLUIDO);
-            agendamentoRepository.save(agendamento);
-
-            return true;
+            repository.save(agendamento);
         }
-        
-        // caso não tenha sido possível realizar o atendimento
-        return false;
+
     }
 
     public void cancelarAtendimento(Agendamento agendamento, AgendamentoRepository agendamentoRepository) {

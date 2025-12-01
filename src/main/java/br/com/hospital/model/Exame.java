@@ -22,8 +22,8 @@ public class Exame extends Agendamento {
     @Lob
     private byte[] laudo;
 
-    public Exame(LocalDateTime data, Paciente paciente, Medico medico, StatusAgendamento status) {
-        super(data, paciente, medico, status);
+    public Exame(LocalDateTime data, Paciente paciente, Medico medico, Informacoes informacoes ,StatusAgendamento status) {
+        super(data, paciente, medico, informacoes, status);
     }
 
     @Override

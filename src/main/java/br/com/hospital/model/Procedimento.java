@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +25,8 @@ public class Procedimento extends Agendamento {
     private String diagnostico;
     private String riscos_observacoes;
 
-    public Procedimento(LocalDateTime data, Paciente paciente, Medico medico, StatusAgendamento status) {
-        super(data, paciente, medico, status);
+    public Procedimento(LocalDateTime data, Paciente paciente, Medico medico, Informacoes informacoes, StatusAgendamento status) {
+        super(data, paciente, medico, informacoes, status);
     }
 
 

@@ -178,11 +178,11 @@ public class Paciente extends User implements StatusInformavel {
         );
 
         T novoAgendamento = switch (informacoes.getTipoAgendamento()) {
-            case Consulta -> (T) new Consulta(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
+            case Consulta -> (T) new Consulta(data, paciente, medico, informacoes, Agendamento.StatusAgendamento.AGENDADO);
 
-            case Exame -> (T) new Exame(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
+            case Exame -> (T) new Exame(data, paciente, medico, informacoes, Agendamento.StatusAgendamento.AGENDADO);
 
-            case Procedimento -> (T) new Procedimento(data, paciente, medico, Agendamento.StatusAgendamento.AGENDADO);
+            case Procedimento -> (T) new Procedimento(data, paciente, medico, informacoes, Agendamento.StatusAgendamento.AGENDADO);
         };
 
         repository.save(novoAgendamento);

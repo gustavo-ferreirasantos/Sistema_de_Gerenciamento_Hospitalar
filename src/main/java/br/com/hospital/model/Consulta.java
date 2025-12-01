@@ -21,8 +21,8 @@ public class Consulta extends Agendamento {
     private String diagnostico;
     private boolean retornoNecessario;
 
-    public Consulta(LocalDateTime data, Paciente paciente, Medico medico, StatusAgendamento status) {
-        super(data, paciente, medico, status);
+    public Consulta(LocalDateTime data, Paciente paciente, Medico medico, Informacoes informacoes, StatusAgendamento status) {
+        super(data, paciente, medico, informacoes, status);
     }
 
 

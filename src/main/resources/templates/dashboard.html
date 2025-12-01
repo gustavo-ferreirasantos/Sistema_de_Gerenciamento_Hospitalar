@@ -137,36 +137,100 @@
   <!-- Seção: Resultados -->
   <section id="resultados" class="secao d-none">
     <div class="card p-4">
-      <h4 class="mb-3"><i class="bi bi-file-earmark-medical me-2"></i>Resultados de Exames</h4>
+      <h4><i class="bi bi-file-earmark-medical me-2"></i>Resultados</h4>
+
       <table class="table table-striped align-middle">
         <thead>
         <tr>
           <th>Data</th>
-          <th>Exame</th>
+          <th>Tipo</th>
+          <th>Nome</th>
           <th>Status</th>
-          <th>Resultado</th>
+          <th>Ação</th>
         </tr>
         </thead>
+
         <tbody>
-        <tr>
-          <td>10/10/2025</td>
-          <td>Hemograma</td>
-          <td><span class="badge bg-success">Disponível</span></td>
-          <td><a href="#" class="btn btn-sm btn-outline-primary">Ver PDF</a></td>
+
+        <!-- CONSULTAS -->
+        <tr th:each="c : ${consultas}"
+            th:if="${c.status != null and c.status.name() != 'CANCELADO'}">
+
+          <td th:text="${#temporals.format(c.data, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
+          <td>Consulta</td>
+
+          <!-- evita NullPointer em informacoes -->
+          <td th:text="${c.informacoes != null ? c.informacoes.nome : '—'}">Nome do Serviço</td>
+
+          <!-- STATUS: usa name() do enum com fallback -->
+          <td>
+            <span th:if="${c.status != null and c.status.name() == 'CONCLUIDO'}" class="badge bg-success">Concluído</span>
+            <span th:if="${c.status != null and c.status.name() == 'AGENDADO'}" class="badge bg-warning text-dark">Pendente</span>
+            <span th:if="${c.status == null}" class="badge bg-secondary">—</span>
+          </td>
+
+          <!-- AÇÃO -->
+          <td>
+            <a class="btn btn-sm btn-primary"
+               th:if="${c.status != null and c.status.name() == 'CONCLUIDO'}"
+               th:href="@{'/agendamentos/resultado/consulta/' + ${c.id}}">
+              Ver Resultado
+            </a>
+            <span th:if="${c.status == null or c.status.name() == 'AGENDADO'}" class="text-muted">Pendente</span>
+          </td>
         </tr>
-        <tr>
-          <td>20/10/2025</td>
-          <td>Ultrassonografia</td>
-          <td><span class="badge bg-warning text-dark">Em análise</span></td>
-          <td>—</td>
+
+        <!-- EXAMES -->
+        <tr th:each="e : ${exames}"
+            th:if="${e.status != null and e.status.name() != 'CANCELADO'}">
+
+          <td th:text="${#temporals.format(e.data, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
+          <td>Exame</td>
+          <td th:text="${e.informacoes != null ? e.informacoes.nome : '—'}">Nome do Exame</td>
+
+          <td>
+            <span th:if="${e.status != null and e.status.name() == 'CONCLUIDO'}" class="badge bg-success">Concluído</span>
+            <span th:if="${e.status != null and e.status.name() == 'AGENDADO'}" class="badge bg-warning text-dark">Pendente</span>
+            <span th:if="${e.status == null}" class="badge bg-secondary">—</span>
+          </td>
+
+          <td>
+            <a class="btn btn-sm btn-primary"
+               th:if="${e.status != null and e.status.name() == 'CONCLUIDO'}"
+               th:href="@{'/agendamentos/resultado/exame/' + ${e.id}}">
+              Ver Resultado
+            </a>
+            <span th:if="${e.status == null or e.status.name() == 'AGENDADO'}" class="text-muted">Pendente</span>
+          </td>
         </tr>
+
+        <!-- PROCEDIMENTOS -->
+        <tr th:each="p : ${procedimentos}"
+            th:if="${p.status != null and p.status.name() != 'CANCELADO'}">
+
+          <td th:text="${#temporals.format(p.data, 'dd/MM/yyyy HH:mm')}">01/01/2025 10:00</td>
+          <td>Procedimento</td>
+          <td th:text="${p.informacoes != null ? p.informacoes.nome : '—'}">Nome do Procedimento</td>
+
+          <td>
+            <span th:if="${p.status != null and p.status.name() == 'CONCLUIDO'}" class="badge bg-success">Concluído</span>
+            <span th:if="${p.status != null and p.status.name() == 'AGENDADO'}" class="badge bg-warning text-dark">Pendente</span>
+            <span th:if="${p.status == null}" class="badge bg-secondary">—</span>
+          </td>
+
+          <td>
+            <a class="btn btn-sm btn-primary"
+               th:if="${p.status != null and p.status.name() == 'CONCLUIDO'}"
+               th:href="@{'/agendamentos/resultado/procedimento/' + ${p.id}}">
+              Ver Resultado
+            </a>
+            <span th:if="${p.status == null or p.status.name() == 'AGENDADO'}" class="text-muted">Pendente</span>
+          </td>
+        </tr>
+
         </tbody>
       </table>
     </div>
-    <form action="/salvarProcedimento" method="post" enctype="multipart/form-data">
-      <input type="file" name="imagem" accept="image/*">
-      <button type="submit">Salvar</button>
-    </form>
   </section>
 
   <!-- Seção: Perfil -->

@@ -32,6 +32,9 @@ public abstract class Agendamento implements Agendavel {
     @ManyToOne
     private Medico medico;
 
+    @ManyToOne
+    private Informacoes informacoes;
+
     @Enumerated(EnumType.STRING)
     private StatusAgendamento status;
 
@@ -45,10 +48,11 @@ public abstract class Agendamento implements Agendavel {
     public abstract String getTipo();
 
     // Construtor com todos os dados
-    public Agendamento(LocalDateTime data, Paciente paciente, Medico medico, StatusAgendamento status) {
+    public Agendamento(LocalDateTime data, Paciente paciente, Medico medico, Informacoes informacoes, StatusAgendamento status) {
         this.data = data;
         this.paciente = paciente;
         this.medico = medico;
+        this.informacoes = informacoes;
         this.status = status;
     }
 

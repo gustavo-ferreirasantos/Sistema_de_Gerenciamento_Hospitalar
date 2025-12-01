@@ -4,6 +4,7 @@ import br.com.hospital.model.*;
 import br.com.hospital.repository.*;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -281,6 +282,9 @@ public class ApplicationController {
         mv.addObject("paciente", pacienteRepository.findById(pacienteId).get());
         mv.addObject("AGENDADO", pacienteService.status(pacienteRepository.findById(pacienteId).get(), "AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
         mv.addObject("CONCLUIDO", pacienteService.status(pacienteRepository.findById(pacienteId).get(), "CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("exames", exameRepository.findByPacienteId(pacienteId));
+        mv.addObject("consultas", consultaRepository.findByPacienteId(pacienteId));
+        mv.addObject("procedimentos", procedimentoRepository.findByPacienteId(pacienteId));
         return mv;
     }
 
@@ -388,6 +392,7 @@ public class ApplicationController {
     @PostMapping("salvar/consulta/{id}")
     public String salvarConsulta(@PathVariable Long id, @RequestParam String diagnostico, @RequestParam(required = false) Boolean retornoNecessario) {
         Consulta c = consultaRepository.findById(id).get();
+        medicoService.realizarAtendimento(c, consultaRepository);
         c.setDiagnostico(diagnostico);
         c.setRetornoNecessario(retornoNecessario);
         consultaRepository.save(c);
@@ -397,6 +402,7 @@ public class ApplicationController {
     @PostMapping("salvar/exame/{id}")
     public String salvarExame(@PathVariable Long id, @RequestParam("resultado") MultipartFile resultado) throws IOException {
         Exame e = exameRepository.findById(id).get();
+        medicoService.realizarAtendimento(e, exameRepository);
         byte[] arquivoBytes = resultado.getBytes();
         e.setLaudo(arquivoBytes);
         exameRepository.save(e);
@@ -406,13 +412,66 @@ public class ApplicationController {
 
 
     @PostMapping("/salvar/procedimento/{id}")
-    public String salvarProcediment(@PathVariable Long id, @RequestParam String remedios, @RequestParam String diagnostico, @RequestParam String riscos_observacoes) {
+    public String salvarProcedimento(@PathVariable Long id, @RequestParam String remedios, @RequestParam String diagnostico, @RequestParam String riscos_observacoes) {
         Procedimento p = procedimentoRepository.findById(id).get();
+        medicoService.realizarAtendimento(p, procedimentoRepository);
         p.setDiagnostico(diagnostico);
         p.setRemedios(remedios);
         p.setRiscos_observacoes(riscos_observacoes);
         procedimentoRepository.save(p);
         return "redirect:/painel/" + p.getMedico().getId();
     }
+
+
+    @GetMapping("/agendamentos/resultado/consulta/{id}")
+    public ModelAndView resultadoConsulta(@PathVariable Long id) {
+        Consulta c = consultaRepository.findById(id).orElse(null);
+
+        ModelAndView mv = new ModelAndView("resultado");
+        mv.addObject("tipo", "Consulta");
+        mv.addObject("agendamento", c);
+
+        return mv;
+    }
+
+    @GetMapping("/agendamentos/resultado/exame/{id}")
+    public ModelAndView resultadoExame(@PathVariable Long id) {
+        Exame e = exameRepository.findById(id).orElse(null);
+
+        ModelAndView mv = new ModelAndView("resultado");
+        mv.addObject("tipo", "Exame");
+        mv.addObject("agendamento", e);
+
+        return mv;
+    }
+
+
+    @GetMapping("/agendamentos/resultado/procedimento/{id}")
+    public ModelAndView resultadoProcedimento(@PathVariable Long id) {
+        Procedimento p = procedimentoRepository.findById(id).orElse(null);
+
+        ModelAndView mv = new ModelAndView("resultado");
+        mv.addObject("tipo", "Procedimento");
+        mv.addObject("agendamento", p);
+
+        return mv;
+    }
+
+
+
+    @GetMapping("/agendamentos/resultado/exame/laudo/{id}")
+    public ResponseEntity<byte[]> visualizarLaudo(@PathVariable Long id) {
+        Exame exame = exameRepository.findById(id).orElse(null);
+
+        if (exame == null || exame.getLaudo() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "inline; filename=laudo.pdf")
+                .body(exame.getLaudo());
+    }
+
 
 }
