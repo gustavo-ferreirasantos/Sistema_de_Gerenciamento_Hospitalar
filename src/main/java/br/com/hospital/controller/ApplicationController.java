@@ -373,6 +373,29 @@ public class ApplicationController {
         return mv;
     }
 
+    @GetMapping("/atendimento/cancelar/consulta/{id}")
+    public String atendimentoCancelarConsulta(@PathVariable Long id){
+        Consulta c = consultaRepository.findById(id).get();
+        medicoService.cancelarAtendimento(c, consultaRepository);
+        return "redirect:/painel/" + c.getMedico().getId();
+    }
+
+    @GetMapping("/atendimento/cancelar/exame/{id}")
+    public String atendimentoCancelarExame(@PathVariable Long id){
+        Exame e = exameRepository.findById(id).get();
+        medicoService.cancelarAtendimento(e, exameRepository);
+        return "redirect:/painel/" + e.getMedico().getId();
+    }
+
+
+    @GetMapping("/atendimento/cancelar/procedimento/{id}")
+    public String atendimentoCancelarProcedimento(@PathVariable Long id){
+        Procedimento p = procedimentoRepository.findById(id).get();
+        medicoService.cancelarAtendimento(p, procedimentoRepository);
+        return "redirect:/painel/" + p.getMedico().getId();
+    }
+
+
     @GetMapping("/atendimento/exame/{id}")
     public ModelAndView atendimentoExame(@PathVariable Long id){
         ModelAndView mv = new ModelAndView("atendimentoExame");

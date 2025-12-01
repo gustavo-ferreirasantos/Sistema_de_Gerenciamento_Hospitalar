@@ -82,21 +82,13 @@ public class Medico extends User implements StatusInformavel {
 
     }
 
-    public void cancelarAtendimento(Agendamento agendamento, AgendamentoRepository agendamentoRepository) {
-        // verifica, primeiro, se o agendamento existe
-        if (agendamento == null){
-            return;
-        }
+    public <T extends Agendamento> void cancelarAtendimento(T agendamento, JpaRepository<T, Long> repository) {
 
-        // verifica se o médico do agendamento é o mesmo da classe
-        if (!Objects.equals(agendamento.getMedico().getId(), this.getId())){
-            return;
-        }
 
         // se o status do agendamento for "AGENDADO" e o médico for o mesmo, ele é cancelado
         if (agendamento.getStatus() == StatusAgendamento.AGENDADO){
             agendamento.setStatus(StatusAgendamento.CANCELADO);
-            agendamentoRepository.save(agendamento);
+            repository.save(agendamento);
         }
     }
 
