@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,7 +23,8 @@ public abstract class Agendamento implements Agendavel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private Timestamp data;
+    @Column(columnDefinition = "DATETIME")
+    private LocalDateTime data;
 
     @ManyToOne
     private Paciente paciente;
@@ -43,7 +45,7 @@ public abstract class Agendamento implements Agendavel {
     public abstract String getTipo();
 
     // Construtor com todos os dados
-    public Agendamento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
+    public Agendamento(LocalDateTime data, Paciente paciente, Medico medico, StatusAgendamento status) {
         this.data = data;
         this.paciente = paciente;
         this.medico = medico;

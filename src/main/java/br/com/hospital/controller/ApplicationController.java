@@ -12,6 +12,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Optional;
 
 @Controller
@@ -143,6 +146,9 @@ public class ApplicationController {
         mv.addObject("PROCEDIMENTO_CANCELADO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_CANCELADO", exameRepository, consultaRepository, procedimentoRepository));
         mv.addObject("PROCEDIMENTO_AGENDADO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
         mv.addObject("PROCEDIMENTO_CONCLUIDO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
+        mv.addObject("consultasMedico", consultaRepository.findByMedicoId(id));
+        mv.addObject("examesMedico", exameRepository.findByMedicoId(id));
+        mv.addObject("procedimentosMedico", procedimentoRepository.findByMedicoId(id));
         return mv;
     }
 
@@ -310,25 +316,38 @@ public class ApplicationController {
         return mv;
     }
 
+
+
     @PostMapping("/agendar/{pacienteId}")
     public String finalizarAgendamento(
             @PathVariable Long pacienteId,
             @RequestParam String tipoAtendimento,
             @RequestParam String tipoEspecifico,
             @RequestParam String medico,
-            @RequestParam String data,
-            @RequestParam String hora,
+            @RequestParam String data,   // formato esperado: yyyy-MM-dd
+            @RequestParam String hora,   // formato esperado: HH:mm
             RedirectAttributes redirect) {
+
         try {
             Paciente p = pacienteRepository.findById(pacienteId).orElseThrow();
             Medico m = medicoRepository.findByNome(medico).orElseThrow();
             Informacoes info = informacoesRepository.findByNome(tipoEspecifico).orElseThrow();
-            Timestamp ts = Timestamp.valueOf(data + " " + hora + ":00");
+
+            // ---- CORREÇÃO DO TEMPO ----
+            LocalDate date = LocalDate.parse(data);
+            LocalTime time = LocalTime.parse(hora);
+            LocalDateTime dataHora = LocalDateTime.of(date, time);
 
             switch (tipoAtendimento) {
-                case "Exame" -> pacienteService.agendar(p, m, ts, info, exameRepository);
-                case "Procedimento" -> pacienteService.agendar(p, m, ts, info, procedimentoRepository);
-                case "Consulta" -> pacienteService.agendar(p, m, ts, info, consultaRepository);
+                case "Exame" ->
+                        pacienteService.agendar(p, m, dataHora, info, exameRepository);
+
+                case "Procedimento" ->
+                        pacienteService.agendar(p, m, dataHora, info, procedimentoRepository);
+
+                case "Consulta" ->
+                        pacienteService.agendar(p, m, dataHora, info, consultaRepository);
+
                 default -> throw new RuntimeException("Tipo inválido");
             }
 
@@ -339,4 +358,7 @@ public class ApplicationController {
             return "redirect:/dashboard/" + pacienteId;
         }
     }
+
+
+
 }

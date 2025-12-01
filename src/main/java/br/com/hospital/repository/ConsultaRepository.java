@@ -4,6 +4,8 @@ import br.com.hospital.model.Consulta;
 import br.com.hospital.model.Procedimento;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
+import java.util.List;
 
+public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
+    List<Consulta> findByMedicoId(Long id);
 }

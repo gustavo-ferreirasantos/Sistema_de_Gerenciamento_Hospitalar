@@ -8,85 +8,68 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', sans-serif;
-        }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
 
         .sidebar {
             height: 100vh;
             background-color: #00334d;
             color: white;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             width: 250px;
             padding-top: 20px;
         }
 
         .sidebar a {
             color: white;
-            text-decoration: none;
-            display: block;
             padding: 12px 20px;
-            transition: background 0.3s;
-            cursor: pointer;
+            display: block;
+            text-decoration: none;
+            transition: .3s;
         }
 
         .sidebar a:hover,
-        .sidebar a.active {
-            background-color: #004d66;
-        }
+        .sidebar a.active { background-color: #004d66; }
 
-        .content {
-            margin-left: 250px;
-            padding: 25px;
-        }
+        .content { margin-left: 250px; padding: 25px; }
 
         .topbar {
-            background-color: white;
+            background: white;
             padding: 15px 25px;
             border-radius: 12px;
             box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .card {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0px 3px 8px rgba(0,0,0,0.15);
-            transition: .2s;
-        }
+        .card { border-radius: 12px; border: none; box-shadow: 0px 3px 8px rgba(0,0,0,0.15); }
+        .card:hover { transform: translateY(-5px); transition: .2s; }
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+        .card-icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .secao { display: none; }
+        .secao.ativa { display: block; }
+        .no-data { text-align: center; color: #777; padding: 40px 0; }
     </style>
 
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- SIDEBAR -->
 <div class="sidebar">
     <h4 class="text-center mb-4">🩺 Painel Médico</h4>
 
-    <a class="active" onclick="mostrarSecao('dashboard')">
+    <a id="link-dashboard" class="active" onclick="mostrarSecao('dashboard', this)">
         <i class="bi bi-speedometer2 me-2"></i> Dashboard
     </a>
-    <a onclick="mostrarSecao('consultas')">
+    <a onclick="mostrarSecao('consultas', this)">
         <i class="bi bi-journal-medical me-2"></i> Consultas
     </a>
-    <a onclick="mostrarSecao('exames')">
+    <a onclick="mostrarSecao('exames', this)">
         <i class="bi bi-file-medical me-2"></i> Exames
     </a>
-    <a onclick="mostrarSecao('perfil')">
+    <a onclick="mostrarSecao('procedimentos', this)">
+        <i class="bi bi-heart-pulse me-2"></i> Procedimentos
+    </a>
+    <a onclick="mostrarSecao('perfil', this)">
         <i class="bi bi-person-circle me-2"></i> Perfil
     </a>
 
@@ -97,230 +80,260 @@
     </a>
 </div>
 
-<!-- Conteúdo -->
+
+<!-- CONTEÚDO -->
 <div class="content">
 
-    <!-- Topbar -->
+    <!-- TOPBAR -->
     <div class="topbar mb-4">
         <h3 class="m-0">Painel do Médico - <span th:text="${medico.nome}">Dr. João</span></h3>
         <i class="bi bi-person-badge fs-3"></i>
     </div>
 
-
     <!-- DASHBOARD -->
-    <section id="dashboard" class="secao">
-
+    <section id="dashboard" class="secao ativa">
         <div class="text-center mb-4">
             <h4>Bem-vindo(a), <span th:text="${medico.nome}">Dr. João</span></h4>
             <p class="text-muted">Veja um resumo das suas atividades.</p>
         </div>
 
         <div class="row text-center mb-4">
+
+            <!-- CONSULTAS -->
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-person-check card-icon"></i>
+                    <i class="bi bi-person-x card-icon"></i>
                     <h5>Consultas Canceladas</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${CONSULTA_CANCELADO}"></span>
-                    </p>
+                    <p class="fs-4 fw-bold"><span th:text="${CONSULTA_CANCELADO}"></span></p>
                 </div>
             </div>
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
                     <i class="bi bi-person-check card-icon"></i>
                     <h5>Consultas Concluídas</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${CONSULTA_AGENDADO}"></span>
-                    </p>
+                    <p class="fs-4 fw-bold"><span th:text="${CONSULTA_CONCLUIDO}"></span></p>
                 </div>
             </div>
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-person-check card-icon"></i>
+                    <i class="bi bi-person-lines-fill card-icon"></i>
                     <h5>Consultas Pendentes</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${CONSULTA_CONCLUIDO}"></span>
-                    </p>
+                    <p class="fs-4 fw-bold"><span th:text="${CONSULTA_AGENDADO}"></span></p>
                 </div>
             </div>
 
-
-
+            <!-- EXAMES -->
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-clipboard2-pulse card-icon"></i>
-                    <h5>Exames Canceladas</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${EXAME_CANCELADO}"></span>
-                    </p>
+                    <i class="bi bi-file-earmark-x card-icon"></i>
+                    <h5>Exames Cancelados</h5>
+                    <p class="fs-4 fw-bold"><span th:text="${EXAME_CANCELADO}"></span></p>
                 </div>
             </div>
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-clipboard2-pulse card-icon"></i>
-                    <h5>Exames Concluídas</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${EXAME_CONCLUIDO}"></span>
-                    </p>
+                    <i class="bi bi-file-earmark-check card-icon"></i>
+                    <h5>Exames Concluídos</h5>
+                    <p class="fs-4 fw-bold"><span th:text="${EXAME_CONCLUIDO}"></span></p>
                 </div>
             </div>
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-clipboard2-pulse card-icon"></i>
+                    <i class="bi bi-file-earmark-text card-icon"></i>
                     <h5>Exames Pendentes</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${EXAME_AGENDADO}"></span>
-                    </p>
+                    <p class="fs-4 fw-bold"><span th:text="${EXAME_AGENDADO}"></span></p>
                 </div>
             </div>
 
-
-
-
-
+            <!-- PROCEDIMENTOS -->
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-heart-pulse card-icon"></i>
-                    <h5>Procedimentos Canceladas</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${PROCEDIMENTO_CANCELADO}"></span>
-                    </p>
+                    <i class="bi bi-heartbreak card-icon"></i>
+                    <h5>Procedimentos Cancelados</h5>
+                    <p class="fs-4 fw-bold"><span th:text="${PROCEDIMENTO_CANCELADO}"></span></p>
                 </div>
             </div>
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-heart-pulse card-icon"></i>
-                    <h5>Procedimentos Concluídas</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${PROCEDIMENTO_CONCLUIDO}"></span>
-                    </p>
+                    <i class="bi bi-heart-check card-icon"></i>
+                    <h5>Procedimentos Concluídos</h5>
+                    <p class="fs-4 fw-bold"><span th:text="${PROCEDIMENTO_CONCLUIDO}"></span></p>
                 </div>
             </div>
+
             <div class="col-md-4 mb-3">
                 <div class="card p-4">
-                    <i class="bi bi-heart-pulse card-icon"></i>
+                    <i class="bi bi-heart card-icon"></i>
                     <h5>Procedimentos Pendentes</h5>
-                    <p class="fs-4 fw-bold">
-                        <span th:text="${PROCEDIMENTO_AGENDADO}"></span>
-                    </p>
+                    <p class="fs-4 fw-bold"><span th:text="${PROCEDIMENTO_AGENDADO}"></span></p>
                 </div>
             </div>
 
         </div>
-
     </section>
 
 
     <!-- CONSULTAS -->
-    <section id="consultas" class="secao d-none">
-
+    <section id="consultas" class="secao">
         <div class="card p-4">
-            <h4 class="mb-3"><i class="bi bi-journal-medical me-2"></i>Consultas</h4>
+            <h4 class="mb-3"><i class="bi bi-journal-medical me-2"></i> Consultas</h4>
 
             <table class="table table-striped align-middle">
                 <thead>
                 <tr>
-                    <th>Horário</th>
+                    <th>Data</th>
                     <th>Paciente</th>
-                    <th>Motivo</th>
-                    <th>Ação</th>
+                    <th>Status</th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>09:00</td>
-                    <td>Maria Silva</td>
-                    <td>Retorno</td>
+                <tr th:each="consulta : ${consultasMedico}">
+                    <td th:text="${#temporals.format(consulta.data, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${consulta.paciente.nome}"></td>
+                    <td th:text="${consulta.status}"></td>
+
                     <td>
-                        <a href="#" class="btn btn-sm btn-primary">Atender</a>
+                        <a th:if="${consulta.status.name() == 'AGENDADO'}"
+                           th:href="@{/atendimento/consulta/{id}(id=${consulta.id})}"
+                           class="btn btn-sm btn-primary">Realizar</a>
+
+                        <a th:if="${consulta.status.name() == 'AGENDADO'}"
+                           th:href="@{/atendimento/cancelar/consulta/{id}(id=${consulta.id})}"
+                           class="btn btn-sm btn-danger">Cancelar</a>
+
+                        <span th:if="${consulta.status.name() == 'CONCLUIDO'}" class="badge bg-success">Concluída</span>
+                        <span th:if="${consulta.status.name() == 'CANCELADO'}" class="badge bg-danger">Cancelada</span>
                     </td>
                 </tr>
-                <tr>
-                    <td>10:30</td>
-                    <td>Carlos Pereira</td>
-                    <td>Dor abdominal</td>
-                    <td><a class="btn btn-sm btn-primary">Atender</a></td>
+
+                <tr th:if="${#lists.isEmpty(consultasMedico)}">
+                    <td colspan="4" class="no-data">Nenhuma consulta encontrada.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
-
     </section>
 
 
     <!-- EXAMES -->
-    <section id="exames" class="secao d-none">
-
+    <section id="exames" class="secao">
         <div class="card p-4">
-            <h4 class="mb-3"><i class="bi bi-file-medical me-2"></i>Exames Pendentes</h4>
+            <h4 class="mb-3"><i class="bi bi-file-medical me-2"></i> Exames</h4>
 
             <table class="table table-striped align-middle">
                 <thead>
                 <tr>
+                    <th>Data</th>
                     <th>Paciente</th>
-                    <th>Exame</th>
                     <th>Status</th>
-                    <th>Laudo</th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>Ana Costa</td>
-                    <td>Hemograma</td>
-                    <td><span class="badge bg-warning">Em análise</span></td>
-                    <td><button class="btn btn-sm btn-success">Enviar Laudo</button></td>
+
+                <tr th:each="exame : ${examesMedico}">
+                    <td th:text="${#temporals.format(exame.data, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${exame.paciente.nome}"></td>
+                    <td th:text="${exame.status}"></td>
+
+                    <td>
+                        <a th:if="${exame.status.name() == 'AGENDADO'}"
+                           th:href="@{/atendimento/exame/{id}(id=${exame.id})}"
+                           class="btn btn-sm btn-primary">Realizar</a>
+
+                        <a th:if="${exame.status.name() == 'AGENDADO'}"
+                           th:href="@{/atendimento/cancelar/exame/{id}(id=${exame.id})}"
+                           class="btn btn-sm btn-danger">Cancelar</a>
+
+                        <span th:if="${exame.status.name() == 'CONCLUIDO'}" class="badge bg-success">Concluído</span>
+                        <span th:if="${exame.status.name() == 'CANCELADO'}" class="badge bg-danger">Cancelado</span>
+                    </td>
                 </tr>
 
-                <tr>
-                    <td>Rafael Lima</td>
-                    <td>Raio-X</td>
-                    <td><span class="badge bg-warning">Pendente</span></td>
-                    <td><button class="btn btn-sm btn-success">Enviar Laudo</button></td>
+                <tr th:if="${#lists.isEmpty(examesMedico)}">
+                    <td colspan="4" class="no-data">Nenhum exame encontrado.</td>
                 </tr>
+
                 </tbody>
             </table>
-        </div>
 
+        </div>
+    </section>
+
+
+    <!-- PROCEDIMENTOS -->
+    <section id="procedimentos" class="secao">
+        <div class="card p-4">
+            <h4 class="mb-3"><i class="bi bi-heart-pulse me-2"></i> Procedimentos</h4>
+
+            <table class="table table-striped align-middle">
+                <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Paciente</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="proc : ${procedimentosMedico}">
+                    <td th:text="${#temporals.format(proc.data, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${proc.paciente.nome}"></td>
+                    <td th:text="${proc.status}"></td>
+
+                    <td>
+                        <a th:if="${proc.status.name() == 'AGENDADO'}"
+                           th:href="@{/atendimento/procedimento/{id}(id=${proc.id})}"
+                           class="btn btn-sm btn-primary">Realizar</a>
+
+                        <a th:if="${proc.status.name() == 'AGENDADO'}"
+                           th:href="@{/atendimento/cancelar/procedimento/{id}(id=${proc.id})}"
+                           class="btn btn-sm btn-danger">Cancelar</a>
+
+                        <span th:if="${proc.status.name() == 'CONCLUIDO'}" class="badge bg-success">Concluído</span>
+                        <span th:if="${proc.status.name() == 'CANCELADO'}" class="badge bg-danger">Cancelado</span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(procedimentosMedico)}">
+                    <td colspan="4" class="no-data">Nenhum procedimento encontrado.</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
     </section>
 
 
     <!-- PERFIL -->
-    <section id="perfil" class="secao d-none">
-
-        <div class="card p-4 text-center">
-            <i class="bi bi-person-circle fs-1 mb-3 text-secondary"></i>
-
-            <h5>Informações do Médico</h5>
-
-            <p><strong>Nome:</strong> <span th:text="${medico.nome}">Dr. João</span></p>
-            <p><strong>Email:</strong> <span th:text="${medico.email}">joao@hospital.com</span></p>
-            <p><strong>Especialidade:</strong> <span th:text="${medico.especialidade}">Cardiologia</span></p>
+    <section id="perfil" class="secao">
+        <div class="card p-4">
+            <h4><i class="bi bi-person-circle me-2"></i> Perfil</h4>
+            <p>Nome: <b th:text="${medico.nome}"></b></p>
+            <p>Email: <b th:text="${medico.email}"></b></p>
+            <p>CRM: <b th:text="${medico.crm}"></b></p>
         </div>
-
     </section>
-
 
 </div>
 
-<!-- SCRIPT DE SEÇÕES -->
 <script>
-    function mostrarSecao(id) {
-        document.querySelectorAll('.secao').forEach(s => s.classList.add('d-none'));
-        document.getElementById(id).classList.remove('d-none');
+    function mostrarSecao(id, link) {
+        document.querySelectorAll('.secao').forEach(sec => sec.classList.remove('ativa'));
+        document.getElementById(id).classList.add('ativa');
 
-        document.querySelectorAll('.sidebar a').forEach(l => l.classList.remove('active'));
-        document.querySelector(`.sidebar a[onclick="mostrarSecao('${id}')"]`)?.classList.add('active');
-
-        sessionStorage.setItem("secaoMedicoAtiva", id);
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const secao = sessionStorage.getItem("secaoMedicoAtiva") || "dashboard";
-        mostrarSecao(secao);
-    });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

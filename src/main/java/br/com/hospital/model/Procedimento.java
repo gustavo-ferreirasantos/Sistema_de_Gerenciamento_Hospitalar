@@ -11,6 +11,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class Procedimento extends Agendamento {
     private String diagnostico;
     private String riscos_observacoes;
 
-    public Procedimento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
+    public Procedimento(LocalDateTime data, Paciente paciente, Medico medico, StatusAgendamento status) {
         super(data, paciente, medico, status);
     }
 
