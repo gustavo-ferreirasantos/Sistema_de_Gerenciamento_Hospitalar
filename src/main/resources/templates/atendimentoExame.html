@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Atendimento - Exame</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Atendimento - Exame</h2>
+
+    <div th:if="${agendamento}">
+        <p><strong>Paciente:</strong> <span th:text="${agendamento.paciente.nome}"></span></p>
+        <p><strong>Data:</strong> <span th:text="${#dates.format(agendamento.data, 'dd/MM/yyyy HH:mm')}"></span></p>
+
+        <form th:action="@{/salvar-atendimento/exame}"
+              method="post"
+              enctype="multipart/form-data">
+
+            <input type="hidden" name="agendamentoId" th:value="${agendamento.id}">
+
+            <div class="mb-3">
+                <label for="resultado" class="form-label">Enviar Laudo (PDF ou Imagem)</label>
+                <input class="form-control"
+                       type="file"
+                       id="resultado"
+                       name="resultado"
+                       accept="application/pdf,image/*"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Exame</button>
+        </form>
+    </div>
+
+    <div th:if="${agendamento == null}">
+        <p class="text-danger">Exame não encontrado.</p>
+    </div>
+</div>
+</body>
+</html>

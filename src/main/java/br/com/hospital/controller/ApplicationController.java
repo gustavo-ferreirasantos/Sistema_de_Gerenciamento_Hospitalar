@@ -173,6 +173,35 @@ public class ApplicationController {
         }
     }
 
+//    @GetMapping("/imagem/exame/{id}")
+//    public void mostrarFotoExame(
+//            @PathVariable Long id,
+//            HttpServletResponse response) throws Exception {
+//        Exame exame = exameRepository.findById(id).orElse(null);
+//
+//        if (exame != null && exame.getLaudo() != null) {
+//            response.setContentType("image/jpeg");
+//            response.getOutputStream().write(exame.getLaudo());
+//            response.getOutputStream().close();
+//        }
+//    }
+
+    @GetMapping("/imagem/exame/{id}")
+    public void mostrarLaudoExame(
+            @PathVariable Long id,
+            HttpServletResponse response) throws Exception {
+
+        Exame exame = exameRepository.findById(id).orElse(null);
+
+        if (exame != null && exame.getLaudo() != null) {
+            response.setContentType("application/pdf");
+            response.getOutputStream().write(exame.getLaudo());
+            response.getOutputStream().close();
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
     @GetMapping("/cadastroServico")
     public ModelAndView cadastroServicoForm() {
         ModelAndView mv = new ModelAndView("cadastroServicos");
@@ -249,31 +278,6 @@ public class ApplicationController {
     }
 
 
-
-    @PostMapping("/salvarProcedimento")
-    public String salvarProcedimento(@RequestParam("imagem") MultipartFile imagemFile) throws Exception {
-        Procedimento p = new Procedimento();
-        if (!imagemFile.isEmpty()) {
-            p.setImagem(imagemFile.getBytes());
-        }
-        procedimentoRepository.save(p);
-        return "redirect:/procedimentos";
-    }
-
-    @GetMapping("procedimentos")
-    public ModelAndView listProcedimento() {
-        return new ModelAndView("procedimentos");
-    }
-
-    @GetMapping("/imagem/procedimento/{id}")
-    public void mostrarImagem(@PathVariable long id, HttpServletResponse response) throws Exception {
-        Procedimento p = procedimentoRepository.findById(id).orElse(null);
-        if (p != null && p.getImagem() != null) {
-            response.setContentType("image/jpeg");
-            response.getOutputStream().write(p.getImagem());
-            response.getOutputStream().close();
-        }
-    }
 
     @GetMapping("/agendamento/{pacienteId}/tipo")
     public ModelAndView agendamentoTipo(@PathVariable Long pacienteId) {

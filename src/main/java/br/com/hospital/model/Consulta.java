@@ -17,7 +17,8 @@ import java.sql.Timestamp;
 @Entity
 public class Consulta extends Agendamento {
 
-    private String descricao;
+    private String diagnostico;
+    private boolean retornoNecessario;
 
     public Consulta(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
         super(data, paciente, medico, status);

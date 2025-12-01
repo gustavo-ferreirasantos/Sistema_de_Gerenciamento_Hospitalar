@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Atendimento - Consulta</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Atendimento - Consulta</h2>
+
+    <div th:if="${agendamento}">
+        <p><strong>Paciente:</strong> <span th:text="${agendamento.paciente.nome}"></span></p>
+        <p><strong>Data:</strong> <span th:text="${#dates.format(agendamento.data, 'dd/MM/yyyy HH:mm')}"></span></p>
+
+        <form th:action="@{/salvar-atendimento/consulta}" method="post">
+
+            <input type="hidden" name="agendamentoId" th:value="${agendamento.id}">
+
+            <div class="mb-3">
+                <label for="diagnostico" class="form-label">Diagnóstico</label>
+                <textarea class="form-control" id="diagnostico" name="diagnostico"
+                          rows="3" th:text="${agendamento.diagnostico}" required></textarea>
+            </div>
+
+
+            <div class="mb-3 form-check">
+                <input class="form-check-input" type="checkbox" id="retornoNecessario"
+                       name="retornoNecessario"
+                       th:checked="${agendamento.retornoNecessario}">
+                <label class="form-check-label" for="retornoNecessario">
+                    Retorno necessário?
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Atendimento</button>
+        </form>
+    </div>
+
+    <div th:if="${agendamento == null}">
+        <p>Consulta não encontrada.</p>
+    </div>
+</div>
+</body>
+</html>

@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 public class Exame extends Agendamento {
 
     @Lob
-    private byte[] exame;
+    private byte[] laudo;
 
     public Exame(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
         super(data, paciente, medico, status);

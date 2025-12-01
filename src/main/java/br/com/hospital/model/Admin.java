@@ -36,10 +36,11 @@ public class Admin extends User {
 
 
     public boolean adicionarPaciente(PacienteRepository pacienteRepository, Paciente paciente) {
+        /*
         if (pacienteRepository.existsByCpf(paciente.getCpf())){
             //redirectAttributes.addFlashAttribute("erro", "CPF já cadastrado.");
             return false;
-        }
+        }*/
         pacienteRepository.save(paciente);
         return true;
 

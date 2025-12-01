@@ -19,10 +19,9 @@ import java.sql.Timestamp;
 @Setter
 public class Procedimento extends Agendamento {
 
-    @Lob
-    private byte[] imagem;
     private String remedios;
-    private String descricao;
+    private String diagnostico;
+    private String riscos_observacoes;
 
     public Procedimento(Timestamp data, Paciente paciente, Medico medico, StatusAgendamento status) {
         super(data, paciente, medico, status);
