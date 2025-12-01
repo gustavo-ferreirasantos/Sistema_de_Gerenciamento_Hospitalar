@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.Optional;
 
 @Controller
@@ -107,8 +108,9 @@ public class ApplicationController {
     }
 
     @PostMapping("/registro")
-    public String registro(Paciente paciente) {
-        if (!adminService.adicionarPaciente(pacienteRepository, paciente)) {
+    public String registro(@ModelAttribute Paciente paciente, @RequestParam("fotoUpload") MultipartFile foto) throws IOException {
+        paciente.setFoto(foto.getBytes());
+        if (pacienteRepository.save(paciente) != null) {
             return "redirect:/registro?error";
         }
         return "redirect:/login";
@@ -122,14 +124,8 @@ public class ApplicationController {
     }
 
     @PostMapping("/registroMedico")
-    public String registroMedico(@ModelAttribute Medico medico, @RequestParam("fotoUpload") MultipartFile foto) {
-        try {
-            if (!foto.isEmpty()) {
-                medico.setFoto(foto.getBytes());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public String registroMedico(@ModelAttribute Medico medico, @RequestParam("fotoUpload") MultipartFile foto) throws IOException {
+        medico.setFoto(foto.getBytes());
         medicoRepository.save(medico);
         return "redirect:/dashboardAdmin";
     }
@@ -148,9 +144,21 @@ public class ApplicationController {
         mv.addObject("PROCEDIMENTO_CANCELADO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_CANCELADO", exameRepository, consultaRepository, procedimentoRepository));
         mv.addObject("PROCEDIMENTO_AGENDADO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
         mv.addObject("PROCEDIMENTO_CONCLUIDO", medicoService.status(medicoRepository.findById(id).get(), "PROCEDIMENTO_CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
-        mv.addObject("consultasMedico", consultaRepository.findByMedicoId(id));
-        mv.addObject("examesMedico", exameRepository.findByMedicoId(id));
-        mv.addObject("procedimentosMedico", procedimentoRepository.findByMedicoId(id));
+        mv.addObject("consultasMedico", consultaRepository.findByMedicoId(id)
+                .stream()
+                .sorted(Comparator.comparing(Consulta::getData))
+                .toList());
+
+        mv.addObject("examesMedico", exameRepository.findByMedicoId(id)
+                .stream()
+                .sorted(Comparator.comparing(Exame::getData))
+                .toList());
+
+        mv.addObject("procedimentosMedico", procedimentoRepository.findByMedicoId(id)
+                .stream()
+                .sorted(Comparator.comparing(Procedimento::getData))
+                .toList());
+
         return mv;
     }
 
@@ -282,9 +290,21 @@ public class ApplicationController {
         mv.addObject("paciente", pacienteRepository.findById(pacienteId).get());
         mv.addObject("AGENDADO", pacienteService.status(pacienteRepository.findById(pacienteId).get(), "AGENDADO", exameRepository, consultaRepository, procedimentoRepository));
         mv.addObject("CONCLUIDO", pacienteService.status(pacienteRepository.findById(pacienteId).get(), "CONCLUIDO", exameRepository, consultaRepository, procedimentoRepository));
-        mv.addObject("exames", exameRepository.findByPacienteId(pacienteId));
-        mv.addObject("consultas", consultaRepository.findByPacienteId(pacienteId));
-        mv.addObject("procedimentos", procedimentoRepository.findByPacienteId(pacienteId));
+        mv.addObject("exames", exameRepository.findByPacienteId(pacienteId)
+                .stream()
+                .sorted(Comparator.comparing(Exame::getData))
+                .toList());
+
+        mv.addObject("consultas", consultaRepository.findByPacienteId(pacienteId)
+                .stream()
+                .sorted(Comparator.comparing(Consulta::getData))
+                .toList());
+
+        mv.addObject("procedimentos", procedimentoRepository.findByPacienteId(pacienteId)
+                .stream()
+                .sorted(Comparator.comparing(Procedimento::getData))
+                .toList());
+
         return mv;
     }
 

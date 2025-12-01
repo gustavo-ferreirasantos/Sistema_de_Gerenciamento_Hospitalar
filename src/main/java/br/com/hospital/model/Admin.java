@@ -46,8 +46,9 @@ public class Admin extends User {
 
     }
 
-    public void adicionarMedico(MedicoRepository medicoRepository, Medico medico) {
+    public boolean adicionarMedico(MedicoRepository medicoRepository, Medico medico) {
         medicoRepository.save(medico);
+        return true;
     }
 
     public void modficarSenha(String senha, AdminRepository adminRepository) {

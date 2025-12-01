@@ -30,10 +30,9 @@ public class Paciente extends User implements StatusInformavel {
     private byte[] foto;
 
 
-    public Paciente(int id, String name, String email, String password, Endereco endereco, byte[] foto, String cpf) {
+    public Paciente(int id, String name, String email, String password, Endereco endereco, String cpf) {
         super(name, email, password);
         this.endereco = endereco;
-        this.foto = foto;
         setCpf(cpf);
     }
 
