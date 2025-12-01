@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -35,11 +37,19 @@ public class Procedimento extends Agendamento {
         return "Procedimento";
     }
 
+
+
     @Override
-    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {
-        if(!agendamento.getTipo().equals("Procedimento")){
-            return;
+    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {}
+
+    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository, String remedios, String diagnostico, String riscos_observacoes) {
+        if (agendamento instanceof Procedimento procedimento) {
+            procedimento.setRemedios(remedios);
+            procedimento.setDiagnostico(diagnostico);
+            procedimento.setRiscos_observacoes(riscos_observacoes);
         }
+        repository.save(agendamento);
 
     }
+
 }

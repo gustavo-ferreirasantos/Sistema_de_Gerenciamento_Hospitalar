@@ -87,7 +87,9 @@
 
     <hr>
 
-    <a href="/painel" class="btn btn-secondary mt-3">Voltar ao Painel</a>
+    <a th:href="@{'/dashboard/' + ${agendamento.paciente.id}}" class="btn btn-secondary mt-3">
+      Voltar ao Painel
+    </a>
 
   </div>
 </div>

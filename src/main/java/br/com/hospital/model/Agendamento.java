@@ -1,8 +1,5 @@
 package br.com.hospital.model;
 
-import br.com.hospital.interfaces.Agendavel;
-import br.com.hospital.model.Medico;
-import br.com.hospital.model.Paciente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Getter
@@ -18,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-public abstract class Agendamento implements Agendavel {
+public abstract class Agendamento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

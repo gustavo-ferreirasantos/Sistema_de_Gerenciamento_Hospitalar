@@ -43,6 +43,9 @@ public class ApplicationController {
     private final Paciente pacienteService = new Paciente();
     private final Medico medicoService = new Medico();
     private final Admin adminService = new Admin();
+    private final Consulta consultaService = new Consulta();
+    private final Exame exameService = new Exame();
+    private final Procedimento procedimentoService = new Procedimento();
 
     @GetMapping("/")
     public ModelAndView home() {
@@ -110,7 +113,7 @@ public class ApplicationController {
     @PostMapping("/registro")
     public String registro(@ModelAttribute Paciente paciente, @RequestParam("fotoUpload") MultipartFile foto) throws IOException {
         paciente.setFoto(foto.getBytes());
-        if (pacienteRepository.save(paciente) != null) {
+        if (!adminService.adicionarPaciente(pacienteRepository, paciente)) {
             return "redirect:/registro?error";
         }
         return "redirect:/login";
@@ -436,19 +439,15 @@ public class ApplicationController {
     public String salvarConsulta(@PathVariable Long id, @RequestParam String diagnostico, @RequestParam(required = false) Boolean retornoNecessario) {
         Consulta c = consultaRepository.findById(id).get();
         medicoService.realizarAtendimento(c, consultaRepository);
-        c.setDiagnostico(diagnostico);
-        c.setRetornoNecessario(retornoNecessario);
-        consultaRepository.save(c);
+        consultaService.resultado(c, consultaRepository, diagnostico, retornoNecessario);
         return "redirect:/painel/" + c.getMedico().getId();
     }
 
     @PostMapping("salvar/exame/{id}")
-    public String salvarExame(@PathVariable Long id, @RequestParam("resultado") MultipartFile resultado) throws IOException {
+    public String salvarExame(@PathVariable Long id, @RequestParam("resultado") MultipartFile file) throws IOException {
         Exame e = exameRepository.findById(id).get();
         medicoService.realizarAtendimento(e, exameRepository);
-        byte[] arquivoBytes = resultado.getBytes();
-        e.setLaudo(arquivoBytes);
-        exameRepository.save(e);
+        exameService.resultado(e, exameRepository, file);
         return "redirect:/painel/" + e.getMedico().getId();
     }
 
@@ -458,10 +457,7 @@ public class ApplicationController {
     public String salvarProcedimento(@PathVariable Long id, @RequestParam String remedios, @RequestParam String diagnostico, @RequestParam String riscos_observacoes) {
         Procedimento p = procedimentoRepository.findById(id).get();
         medicoService.realizarAtendimento(p, procedimentoRepository);
-        p.setDiagnostico(diagnostico);
-        p.setRemedios(remedios);
-        p.setRiscos_observacoes(riscos_observacoes);
-        procedimentoRepository.save(p);
+        procedimentoService.resultado(p, procedimentoRepository, remedios, diagnostico, riscos_observacoes);
         return "redirect:/painel/" + p.getMedico().getId();
     }
 

@@ -27,17 +27,21 @@ public class Consulta extends Agendamento {
 
 
 
+
     @Override
     public String getTipo() {
         return "Consulta";
     }
 
+
     @Override
-    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {
-        if(!agendamento.getTipo().equals("Consulta")){
-            return;
+    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {}
+
+    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository, String diagnostico, boolean retornoNecessario) {
+        if (agendamento instanceof Consulta consulta) {
+            consulta.retornoNecessario = retornoNecessario;
+            consulta.diagnostico = diagnostico;
         }
-
-
+        repository.save(agendamento);
     }
 }

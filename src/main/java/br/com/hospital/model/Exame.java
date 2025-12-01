@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -33,9 +35,14 @@ public class Exame extends Agendamento {
 
     @Override
     public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {
-        if(!agendamento.getTipo().equals("Exame")){
-            return;
+
+    }
+
+    public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository, MultipartFile file) throws IOException {
+        if (agendamento instanceof Exame exame) {
+            exame.laudo = file.getBytes();
         }
+        repository.save(agendamento);
 
     }
 }
