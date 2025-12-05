@@ -111,8 +111,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/registro")
-    public String registro(@ModelAttribute Paciente paciente, @RequestParam("fotoUpload") MultipartFile foto) throws IOException {
-        paciente.setFoto(foto.getBytes());
+    public String registro(@ModelAttribute Paciente paciente)  {
         if (!adminService.adicionarPaciente(pacienteRepository, paciente)) {
             return "redirect:/registro?error";
         }
@@ -179,31 +178,6 @@ public class ApplicationController {
         }
     }
 
-    @GetMapping("/imagem/paciente/{id}")
-    public void mostrarFotoPaciente(
-            @PathVariable Long id,
-            HttpServletResponse response) throws Exception {
-        Paciente paciente = pacienteRepository.findById(id).orElse(null);
-
-        if (paciente != null && paciente.getFoto() != null) {
-            response.setContentType("image/jpeg");
-            response.getOutputStream().write(paciente.getFoto());
-            response.getOutputStream().close();
-        }
-    }
-
-//    @GetMapping("/imagem/exame/{id}")
-//    public void mostrarFotoExame(
-//            @PathVariable Long id,
-//            HttpServletResponse response) throws Exception {
-//        Exame exame = exameRepository.findById(id).orElse(null);
-//
-//        if (exame != null && exame.getLaudo() != null) {
-//            response.setContentType("image/jpeg");
-//            response.getOutputStream().write(exame.getLaudo());
-//            response.getOutputStream().close();
-//        }
-//    }
 
     @GetMapping("/imagem/exame/{id}")
     public void mostrarLaudoExame(

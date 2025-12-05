@@ -121,7 +121,6 @@
         <thead class="table-primary">
         <tr>
           <th>Id</th>
-          <th>Foto</th>
           <th>Nome</th>
           <th>E-mail</th>
           <th>Senha</th>
@@ -133,15 +132,6 @@
         <tbody>
         <tr th:each="paciente : ${pacientes}">
           <td th:text="${paciente.id}"></td>
-          <!-- FOTO VIA ENDPOINT -->
-          <td>
-            <img th:if="${paciente.foto!= null}"
-                 th:src="@{'/imagem/paciente/' + ${paciente.id}}"
-                 class="rounded-circle"
-                 width="50" height="50">
-
-            <span th:if="${paciente.foto == null}" class="text-muted">Sem foto</span>
-          </td>
           <td th:text="${paciente.nome}"></td>
           <td th:text="${paciente.email}"></td>
           <td th:text="${paciente.password}"></td>

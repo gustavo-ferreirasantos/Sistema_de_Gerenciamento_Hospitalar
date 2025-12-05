@@ -26,8 +26,6 @@ public class Paciente extends User implements StatusInformavel {
     @Embedded
     private Endereco endereco;
     private String cpf;
-    @Lob
-    private byte[] foto;
 
 
     public Paciente(int id, String name, String email, String password, Endereco endereco, String cpf) {
