@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: hospital
+    env: docker
+    dockerfilePath: ./Dockerfile
+    healthCheck:
+      path: /actuator/health
+    envVars:
+      - key: SERVER_PORT
+        value: 8080
