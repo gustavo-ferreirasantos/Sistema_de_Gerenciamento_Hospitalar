@@ -1,15 +1,23 @@
 # Estágio de Build
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 WORKDIR /app
-COPY .mvn/ .mvn
-COPY mvnw pom.xml ./
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn clean install -DskipTests
 
-# Estágio Final
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn/ .mvn/
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
+RUN ./mvnw clean package -DskipTests
+
+# Estágio Final (Imagem leve)
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=builder /app/target/hospital-0.0.1-SNAPSHOT.jar .
+
+COPY --from=builder /app/target/*.jar app.jar
+
 EXPOSE 8080
-CMD ["java", "-jar", "hospital-0.0.1-SNAPSHOT.jar"]
+
+ENV JAVA_OPTS=""
+
+CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
