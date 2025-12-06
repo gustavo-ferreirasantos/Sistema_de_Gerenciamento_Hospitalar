@@ -38,7 +38,6 @@ public class Procedimento extends Agendamento {
     }
 
 
-
     @Override
     public <T extends Agendamento> void resultado(T agendamento, JpaRepository<T, Long> repository) {}
 
